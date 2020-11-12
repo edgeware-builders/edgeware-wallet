@@ -2,6 +2,16 @@
 
 <!-- TODO(shekohex): add CI Tags here once done with CI/CD -->
 
+<div align="center">
+  <img src="https://edgewa.re/images/logo.png" width="90" />
+</div>
+
+<div align="center">
+  <sub>
+      ⚠ Still Under Constructions ⚠.
+  </sub>
+</div>
+
 This project uses [cargo make](https://github.com/sagiegurari/cargo-make) to combine the build commands for compiling the Rust `edgeware-wallet` module and linking it to the Flutter interface. This structure will eventually enable our substrate RPC client to talk directly to the Flutter interface (with no dependency on polkadot.js).
 
 [`shekohex/flutterust`](https://github.com/shekohex/flutterust) is a generic template for Rust to Dart FFI
