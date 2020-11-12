@@ -25,7 +25,6 @@ dependencies = [
   "android-x86_64-release",
   "post-android-x86_64",
   "cbindgen",
-  "dart-bindgen",
   "post-android",
   ]
 
@@ -39,7 +38,6 @@ dependencies = [
   "android-aarch64-release",
   "post-android-aarch64",
   "cbindgen",
-  "dart-bindgen",
   "post-android",
   ]
 
@@ -61,7 +59,6 @@ dependencies = [
   "ios-build",
   "ios-release", 
   "cbindgen",
-  "dart-bindgen",
   "post-ios"
   ]
 
@@ -253,22 +250,6 @@ args = [
   "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/native/${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}/binding.h"
 ]
 
-
-[tasks.dart-bindgen]
-command = "dart-bindgen"
-args = [
-  "--input",
-  "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/native/${CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER}/binding.h",
-  "--output",
-  "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/packages/${CARGO_MAKE_CRATE_FS_NAME}/lib/ffi.dart",
-  "--name",
-  "lib${CARGO_MAKE_CRATE_FS_NAME}",
-  "--android",
-  "lib${CARGO_MAKE_CRATE_FS_NAME}.so",
-  "--ios",
-  "executable",
-  "--allo-isolate"
-]
 
 [tasks.setup-crate-type-android]
 private = true

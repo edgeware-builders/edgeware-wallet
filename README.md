@@ -16,11 +16,10 @@ It is common for developers to get stuck setting the path to the Dart and Flutte
 
 You probably won't have a connected device and that's OK, you can pick your emulator in step (5) below.
 
-3. Install Cargo Make, Dart Bindgen, and CBindgen (skip if you already have them installed)
+3. Install Cargo Make, and CBindgen (skip if you already have them installed)
 
 ```
 $ cargo install cargo-make cbindgen
-$ cargo install dart-bindgen --features cli
 ```
 
 4. Clone this repository.
@@ -34,7 +33,7 @@ _These instructions assume that you have installed Android Studio or the flutter
 6. Run the following commands in the root of the cloned repository.
 
 ```
-$ rustup default nightly # for faster builds (see .cargo/config.toml)
+$ rustup target add aarch64-linux-android x86_64-linux-android
 $ cargo make android-dev # for android only using x86_64 emulator (run cargo make android to build for all android targets)
 $ flutter run
 ```
@@ -54,7 +53,7 @@ You may have to specify File -> Open Device -> `$MODEL` once the simulator opens
 6. In the root of the cloned repo, run the following commands.
 
 ```
-$ rustup default nightly # for faster builds (see .cargo/config.toml)
+$ rustup target add aarch64-apple-ios x86_64-apple-ios
 $ cargo make ios --profile release # Release Build is Required since debug build is very big.
 $ flutter run
 ```

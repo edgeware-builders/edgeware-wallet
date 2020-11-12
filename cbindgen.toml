@@ -11,7 +11,6 @@ documentation_style = "auto"
 style = "both"
 
 [export]
-item_types = ["structs", "functions", "constants"]
 renaming_overrides_prefixing = false
 
 [const]

@@ -12,4 +12,8 @@ crate-type = ["rlib"]
 
 [dependencies]
 log = "^0.4"
-
+substrate-subxt = "0.13"
+zeroize = "1.1"
+tiny-bip39 = "0.8"
+thiserror = "^1.0"
+anyhow = "^1.0"
