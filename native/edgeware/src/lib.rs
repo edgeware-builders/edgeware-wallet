@@ -1,5 +1,8 @@
 use std::{ffi, os::raw};
-use substrate_subxt::sp_core::{crypto::Ss58Codec, Pair};
+use substrate_subxt::sp_core::{
+    crypto::{Ss58AddressFormat, Ss58Codec},
+    Pair,
+};
 
 mod array;
 mod crypto;
@@ -95,7 +98,10 @@ pub unsafe extern "C" fn edg_keypair_public(
     keypair: RawKeyPair,
 ) -> *const raw::c_char {
     let keypair = keypair!(keypair);
-    let pk = keypair.pair().public().to_ss58check();
+    let pk = keypair
+        .pair()
+        .public()
+        .to_ss58check_with_version(Ss58AddressFormat::EdgewareAccount);
     let pk = unwrap_or_null!(ffi::CString::new(pk));
     pk.into_raw()
 }
