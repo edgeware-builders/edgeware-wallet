@@ -9,23 +9,23 @@ macro_rules! cstr {
             Some($crate::cstr!($ptr))
         }
     };
-    ($ptr:expr, allow_null, $error:expr) => {
+    ($ptr:expr, err = $error:expr, allow_null) => {
         if $ptr.is_null() {
             None
         } else {
-            Some($crate::cstr!($ptr, $error))
+            Some($crate::cstr!($ptr, err = $error))
         }
     };
     ($ptr:expr) => {
-        $crate::cstr!($ptr, std::ptr::null());
+        $crate::cstr!($ptr, err = std::ptr::null());
     };
-    ($ptr:expr, $error:expr) => {{
+    ($ptr:expr, err = $error:expr) => {{
         if $ptr.is_null() {
             return $error;
         }
-        $crate::unwrap_or_null!(
+        $crate::unwrap_or!(
             ::std::ffi::CStr::from_ptr($ptr).to_str(),
-            $error
+            err = $error
         )
     }};
 }
@@ -34,13 +34,58 @@ macro_rules! cstr {
 #[macro_export]
 macro_rules! unwrap_or_null {
     ($result:expr) => {
-        $crate::unwrap_or_null!($result, std::ptr::null());
+        $crate::unwrap_or!($result, err = std::ptr::null());
     };
+}
 
-    ($result:expr, $err:expr) => {
+#[doc(hidden)]
+#[macro_export]
+macro_rules! unwrap_or {
+    ($result:expr, err = $err:expr) => {
         match $result {
             Ok(value) => value,
             Err(_) => return $err,
+        }
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! keypair {
+    ($ptr:expr) => {
+        $crate::keypair!($ptr, err = std::ptr::null());
+    };
+
+    ($ptr:expr, err = $err:expr) => {
+        match $ptr.cast::<crate::crypto::KeyPair>().as_ref() {
+            Some(v) => v,
+            None => return $err,
+        }
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! ffi_array {
+    ($ptr:expr) => {
+        $crate::ffi_array!($ptr, err = std::ptr::null());
+    };
+
+    ($ptr:expr, as_mut) => {
+        $crate::ffi_array!($ptr, err = std::ptr::null(), as_mut);
+    };
+
+    ($ptr:expr, err = $err:expr) => {
+        match $ptr.as_ref() {
+            Some(v) => v,
+            None => return $err,
+        }
+    };
+
+    ($ptr:expr, err = $err:expr, as_mut) => {
+        match $ptr.as_mut() {
+            Some(v) => v,
+            None => return $err,
         }
     };
 }

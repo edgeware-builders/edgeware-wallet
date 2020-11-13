@@ -151,6 +151,8 @@ class RawEdgeware {
 
   _dart_edg_keypair_restore _edg_keypair_restore;
 
+  /// A Hack around to force Xcode on iOS to link our static lib
+  /// this a noop function, so it dose not make sense to call it yourself.
   void edg_link_me_please() {
     _edg_link_me_please ??=
         _dylib.lookupFunction<_c_edg_link_me_please, _dart_edg_link_me_please>(

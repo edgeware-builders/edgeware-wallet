@@ -40,10 +40,7 @@ pub unsafe extern "C" fn edg_keypair_init(
     password: *const raw::c_char,
 ) -> RawKeyPair {
     let password = cstr!(password);
-    let entropy = match entropy.as_ref() {
-        Some(e) => e,
-        None => return std::ptr::null(),
-    };
+    let entropy = ffi_array!(entropy);
     let keypair = crypto::KeyPair::init(entropy.as_ref().to_owned(), password);
     let boxed = Box::new(keypair);
     Box::into_raw(boxed) as _
@@ -62,10 +59,7 @@ pub unsafe extern "C" fn edg_keypair_restore(
 ) -> RawKeyPair {
     let phrase = cstr!(phrase);
     let password = cstr!(password);
-    let keypair = match crypto::KeyPair::restore(phrase, password) {
-        Ok(v) => v,
-        Err(_) => return std::ptr::null(),
-    };
+    let keypair = unwrap_or_null!(crypto::KeyPair::restore(phrase, password));
     let boxed = Box::new(keypair);
     Box::into_raw(boxed) as _
 }
@@ -82,12 +76,9 @@ pub unsafe extern "C" fn edg_keypair_restore(
 pub unsafe extern "C" fn edg_keypair_backup(
     keypair: RawKeyPair,
 ) -> *const raw::c_char {
-    let keypair = match keypair.cast::<crypto::KeyPair>().as_ref() {
-        Some(v) => v,
-        None => return std::ptr::null(),
-    };
+    let keypair = keypair!(keypair);
     let pharse = keypair.backup();
-    let pharse = ffi::CString::new(pharse).expect("valid string");
+    let pharse = unwrap_or_null!(ffi::CString::new(pharse));
     pharse.into_raw()
 }
 
@@ -103,12 +94,9 @@ pub unsafe extern "C" fn edg_keypair_backup(
 pub unsafe extern "C" fn edg_keypair_public(
     keypair: RawKeyPair,
 ) -> *const raw::c_char {
-    let keypair = match keypair.cast::<crypto::KeyPair>().as_ref() {
-        Some(v) => v,
-        None => return std::ptr::null(),
-    };
+    let keypair = keypair!(keypair);
     let pk = keypair.pair().public().to_ss58check();
-    let pk = ffi::CString::new(pk).expect("valid string");
+    let pk = unwrap_or_null!(ffi::CString::new(pk));
     pk.into_raw()
 }
 
@@ -130,19 +118,11 @@ pub unsafe extern "C" fn edg_keypair_entropy(
     keypair: RawKeyPair,
     out: RawMutFfiArray,
 ) -> i32 {
-    let keypair = match keypair.cast::<crypto::KeyPair>().as_ref() {
-        Some(v) => v,
-        None => return 0,
-    };
-    let arr = match out.as_mut() {
-        Some(v) => v,
-        None => return 0,
-    };
+    let keypair = keypair!(keypair, err = 0);
+    let arr = ffi_array!(out, err = 0, as_mut);
     let entropy = keypair.entropy();
-    match arr.write(entropy) {
-        Ok(_) => 1,
-        Err(_) => 0,
-    }
+    unwrap_or!(arr.write(entropy), err = 0);
+    1
 }
 
 /// Free(Clean, Drop) the KeyPair.
@@ -169,5 +149,7 @@ pub unsafe extern "C" fn edg_string_free(ptr: *const raw::c_char) {
     }
 }
 
+/// A Hack around to force Xcode on iOS to link our static lib
+/// this a noop function, so it dose not make sense to call it yourself.
 #[no_mangle]
 pub extern "C" fn edg_link_me_please() {}
