@@ -3,7 +3,7 @@
 <!-- TODO(shekohex): add CI Tags here once done with CI/CD -->
 
 <div align="center">
-  <img src="https://edgewa.re/images/logo.png" width="90" />
+  <img src="assets/promo.jpg" />
 </div>
 
 <div align="center">
