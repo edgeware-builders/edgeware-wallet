@@ -46,5 +46,10 @@ List<GetPage> _buildPages() {
       page: () => SplashScreen(),
       binding: SplashBindings(),
     ),
+    GetPage(
+      name: Routes.intro,
+      page: () => IntroScreen(),
+      binding: IntroBindings(),
+    ),
   ];
 }

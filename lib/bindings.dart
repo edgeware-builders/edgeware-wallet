@@ -11,3 +11,10 @@ class SplashBindings extends Bindings {
     Get.put(SplashController());
   }
 }
+
+class IntroBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(IntroController());
+  }
+}

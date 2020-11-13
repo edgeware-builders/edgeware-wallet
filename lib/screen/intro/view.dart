@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/wallet.dart';
 
-class SplashScreen extends GetView<SplashController> {
+class IntroScreen extends GetView<IntroController> {
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(
-      context,
-      designSize: kDesignSize,
-      allowFontScaling: true,
-    );
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -43,6 +38,18 @@ class SplashScreen extends GetView<SplashController> {
             ],
           ),
           const Expanded(child: SizedBox()),
+          Button(
+            text: 'Generate new account',
+            onPressed: () {},
+          ),
+          SizedBox(height: 20.h),
+          Button(
+            text: 'Recover my account',
+            textColor: Colors.black,
+            variant: ButtonVariant.outline,
+            onPressed: () {},
+          ),
+          SizedBox(height: 20.h),
           Text(
             '© Commonwealth Labs ${DateTime.now().year}',
             style: TextStyle(
