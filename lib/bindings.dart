@@ -25,3 +25,10 @@ class RecoverAccountBindings extends Bindings {
     Get.put(RecoverAccountController());
   }
 }
+
+class HomeBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(HomeController());
+  }
+}

@@ -21,16 +21,17 @@ class GenerateAccountScreen extends GetView<GenerateAccountController> {
           SizedBox(height: 15.h),
           const Input(hintText: 'Name'),
           SizedBox(height: 8.h),
-          const Input(hintText: 'Password'),
+          const Input(hintText: 'Password', obscureText: true),
           SizedBox(height: 8.h),
-          const Input(hintText: 'Password again'),
+          const Input(hintText: 'Password again', obscureText: true),
           SizedBox(height: 15.h),
           const Expanded(child: SizedBox()),
           Button(
             text: 'Continue',
             onPressed: () {
-              // TODO(shekohex): generate account
+              controller.generate();
             },
+            enabled: true, // we should disable it while we are generating.
           ),
           SizedBox(height: 40.h),
         ],

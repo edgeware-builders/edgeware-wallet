@@ -25,7 +25,7 @@ class RecoverAccountScreen extends GetView<RecoverAccountController> {
             maxLines: 4,
           ),
           SizedBox(height: 8.h),
-          const Input(hintText: 'Password'),
+          const Input(hintText: 'Password', obscureText: true),
           SizedBox(height: 8.h),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -43,8 +43,9 @@ class RecoverAccountScreen extends GetView<RecoverAccountController> {
           Button(
             text: 'Continue',
             onPressed: () {
-              // TODO(shekohex): recover account
+              controller.recover();
             },
+            enabled: true, // we should disable it while recovering.
           ),
           SizedBox(height: 40.h),
         ],

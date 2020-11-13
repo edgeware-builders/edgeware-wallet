@@ -60,5 +60,10 @@ List<GetPage> _buildPages() {
       page: () => RecoverAccountScreen(),
       binding: RecoverAccountBindings(),
     ),
+    GetPage(
+      name: Routes.home,
+      page: () => HomeScreen(),
+      binding: HomeBindings(),
+    ),
   ];
 }
