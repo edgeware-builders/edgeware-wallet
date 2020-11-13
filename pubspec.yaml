@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
+  edgeware:
+    path: ./packages/edgeware
 
 dev_dependencies:
   flutter_test:

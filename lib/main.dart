@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:edgeware/edgeware.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,10 +10,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Edgeware Wallet',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Edgeware KeyPair Demo'),
     );
   }
 }
@@ -27,12 +29,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  String _pk;
+  Edgeware _edgeware;
 
-  void _incrementCounter() {
+  @override
+  void initState() {
+    super.initState();
+    _edgeware = Edgeware();
+  }
+
+  void _regenerate() {
+    final keypair = _edgeware.generateKeyPair('123456');
+    final paperKey = _edgeware.backupKeyPair();
+    final k2 = _edgeware.restoreKeyPair(paperKey, '123456');
+    // restore works :)
+    assert(k2.public == keypair.public);
     setState(() {
-      _counter++;
+      _pk = keypair.public;
     });
+  }
+
+  @override
+  void dispose() {
+    _edgeware.cleanKeyPair();
+    super.dispose();
   }
 
   @override
@@ -44,21 +64,25 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             const Text(
-              'You have pushed the button this many times:',
+              'Your Public Key:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            if (_pk != null)
+              Text(
+                '$_pk',
+              )
+            else
+              const Text(
+                'Hit the floating action button to generate a Key',
+              ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: _regenerate,
+        tooltip: 'Generate',
+        child: const Icon(Icons.autorenew),
       ),
     );
   }
