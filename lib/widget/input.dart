@@ -76,7 +76,7 @@ class Input extends StatelessWidget {
         style: TextStyle(
           fontSize: 18.ssp,
           fontWeight: FontWeight.w400,
-          color: Colors.white,
+          color: Colors.black,
         ),
         textAlign: TextAlign.start,
         decoration: InputDecoration(

@@ -12,9 +12,16 @@ class SplashBindings extends Bindings {
   }
 }
 
-class IntroBindings extends Bindings {
+class GenerateAccountBindings extends Bindings {
   @override
   void dependencies() {
-    Get.put(IntroController());
+    Get.put(GenerateAccountController());
+  }
+}
+
+class RecoverAccountBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(RecoverAccountController());
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wallet/wallet.dart';
 
-class IntroScreen extends GetView<IntroController> {
+class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,14 +40,18 @@ class IntroScreen extends GetView<IntroController> {
           const Expanded(child: SizedBox()),
           Button(
             text: 'Generate new account',
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed(Routes.generateAccount);
+            },
           ),
           SizedBox(height: 20.h),
           Button(
             text: 'Recover my account',
             textColor: Colors.black,
             variant: ButtonVariant.outline,
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed(Routes.recoverAccount);
+            },
           ),
           SizedBox(height: 20.h),
           Text(

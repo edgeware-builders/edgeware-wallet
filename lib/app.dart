@@ -14,7 +14,7 @@ class EdgewareWalletApp extends StatelessWidget {
       enableLog: !kReleaseMode,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: AppColors.primary,
+        primaryColor: AppColors.mainBackround,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         backgroundColor: AppColors.mainBackround,
         splashColor: Colors.black26,
@@ -49,7 +49,16 @@ List<GetPage> _buildPages() {
     GetPage(
       name: Routes.intro,
       page: () => IntroScreen(),
-      binding: IntroBindings(),
+    ),
+    GetPage(
+      name: Routes.generateAccount,
+      page: () => GenerateAccountScreen(),
+      binding: GenerateAccountBindings(),
+    ),
+    GetPage(
+      name: Routes.recoverAccount,
+      page: () => RecoverAccountScreen(),
+      binding: RecoverAccountBindings(),
     ),
   ];
 }
