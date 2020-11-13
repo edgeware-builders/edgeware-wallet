@@ -11,6 +11,52 @@ class RawEdgeware {
   /// The symbols are looked up in [dynamicLibrary].
   RawEdgeware(ffi.DynamicLibrary dynamicLibrary) : _dylib = dynamicLibrary;
 
+  /// Backup KeyPair and get a Mnemonic phrase.
+  ///
+  /// ### Note
+  /// you should call `edg_string_free` to free this string after you done with it.
+  ///
+  /// ### Safety
+  /// this assumes that `keypair` is not null and it is a valid `KeyPair`.
+  ffi.Pointer<ffi.Int8> edg_keypair_backup(
+    ffi.Pointer<ffi.Void> keypair,
+  ) {
+    _edg_keypair_backup ??=
+        _dylib.lookupFunction<_c_edg_keypair_backup, _dart_edg_keypair_backup>(
+            'edg_keypair_backup');
+    return _edg_keypair_backup(
+      keypair,
+    );
+  }
+
+  _dart_edg_keypair_backup _edg_keypair_backup;
+
+  /// Get `KeyPair`'s Entropy and return 1 (true).
+  /// the `out` array length must be equal to the `KeyPair`s entropy length.
+  ///
+  /// + 16 bytes for 12 words.
+  /// + 20 bytes for 15 words.
+  /// + 24 bytes for 18 words.
+  /// + 28 bytes for 21 words.
+  /// + 32 bytes for 24 words.
+  ///
+  /// Any other length will return an error 0 (false).
+  /// ### Safety
+  /// this assumes that `keypair` is not null and it is a valid `KeyPair`.
+  int edg_keypair_entropy(
+    ffi.Pointer<ffi.Void> keypair,
+    ffi.Pointer<FfiArray> out,
+  ) {
+    _edg_keypair_entropy ??= _dylib.lookupFunction<_c_edg_keypair_entropy,
+        _dart_edg_keypair_entropy>('edg_keypair_entropy');
+    return _edg_keypair_entropy(
+      keypair,
+      out,
+    );
+  }
+
+  _dart_edg_keypair_entropy _edg_keypair_entropy;
+
   /// Free(Clean, Drop) the KeyPair.
   ///
   /// ### Safety
@@ -66,6 +112,26 @@ class RawEdgeware {
 
   _dart_edg_keypair_new _edg_keypair_new;
 
+  /// Get `KeyPair`'s Public Key in ss58 format.
+  ///
+  /// ### Note
+  /// you should call `edg_string_free` to free this string after you done with it.
+  ///
+  /// ### Safety
+  /// this assumes that `keypair` is not null and it is a valid `KeyPair`.
+  ffi.Pointer<ffi.Int8> edg_keypair_public(
+    ffi.Pointer<ffi.Void> keypair,
+  ) {
+    _edg_keypair_public ??=
+        _dylib.lookupFunction<_c_edg_keypair_public, _dart_edg_keypair_public>(
+            'edg_keypair_public');
+    return _edg_keypair_public(
+      keypair,
+    );
+  }
+
+  _dart_edg_keypair_public _edg_keypair_public;
+
   /// Restore KeyPair using Mnemonic phrase.
   ///
   /// ### Safety
@@ -120,6 +186,24 @@ class FfiArray extends ffi.Struct {
   int len;
 }
 
+typedef _c_edg_keypair_backup = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Void> keypair,
+);
+
+typedef _dart_edg_keypair_backup = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Void> keypair,
+);
+
+typedef _c_edg_keypair_entropy = ffi.Int32 Function(
+  ffi.Pointer<ffi.Void> keypair,
+  ffi.Pointer<FfiArray> out,
+);
+
+typedef _dart_edg_keypair_entropy = int Function(
+  ffi.Pointer<ffi.Void> keypair,
+  ffi.Pointer<FfiArray> out,
+);
+
 typedef _c_edg_keypair_free = ffi.Void Function(
   ffi.Pointer<ffi.Void> ptr,
 );
@@ -144,6 +228,14 @@ typedef _c_edg_keypair_new = ffi.Pointer<ffi.Void> Function(
 
 typedef _dart_edg_keypair_new = ffi.Pointer<ffi.Void> Function(
   ffi.Pointer<ffi.Int8> password,
+);
+
+typedef _c_edg_keypair_public = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Void> keypair,
+);
+
+typedef _dart_edg_keypair_public = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Void> keypair,
 );
 
 typedef _c_edg_keypair_restore = ffi.Pointer<ffi.Void> Function(
