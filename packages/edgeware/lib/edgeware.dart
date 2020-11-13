@@ -43,9 +43,9 @@ class Edgeware {
     return KeyPair._(entropy, pk);
   }
 
-  KeyPair restoreKeyPair(String pharse, String password) {
+  KeyPair restoreKeyPair(String phrase, String password) {
     _keypair = _lib.edg_keypair_restore(
-      pharse.toPointer().cast(),
+      phrase.toPointer().cast(),
       password.toPointer().cast(),
     );
     assert(_keypair != nullptr);
@@ -61,11 +61,11 @@ class Edgeware {
 
   String backupKeyPair() {
     assert(_keypair != nullptr);
-    final pharsePtr = _lib.edg_keypair_backup(_keypair);
-    assert(pharsePtr != nullptr);
-    final pharse = Utf8.fromUtf8(pharsePtr.cast());
-    _lib.edg_string_free(pharsePtr);
-    return pharse;
+    final phrasePtr = _lib.edg_keypair_backup(_keypair);
+    assert(phrasePtr != nullptr);
+    final phrase = Utf8.fromUtf8(phrasePtr.cast());
+    _lib.edg_string_free(phrasePtr);
+    return phrase;
   }
 
   void cleanKeyPair() {

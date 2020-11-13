@@ -77,9 +77,9 @@ pub unsafe extern "C" fn edg_keypair_backup(
     keypair: RawKeyPair,
 ) -> *const raw::c_char {
     let keypair = keypair!(keypair);
-    let pharse = keypair.backup();
-    let pharse = unwrap_or_null!(ffi::CString::new(pharse));
-    pharse.into_raw()
+    let phrase = keypair.backup();
+    let phrase = unwrap_or_null!(ffi::CString::new(phrase));
+    phrase.into_raw()
 }
 
 /// Get `KeyPair`'s Public Key in ss58 format.

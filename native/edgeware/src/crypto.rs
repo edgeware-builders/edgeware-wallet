@@ -109,8 +109,8 @@ mod test_keypair {
             word_count: NonZeroUsize::new(12).unwrap(),
         };
         let keypair = KeyPair::new(config, "super-secret");
-        let pharse = keypair.backup();
-        let keypair2 = KeyPair::restore(&pharse, "super-secret").unwrap();
+        let phrase = keypair.backup();
+        let keypair2 = KeyPair::restore(&phrase, "super-secret").unwrap();
         assert_eq!(keypair.pair().public(), keypair2.pair().public());
         keypair.clean();
         keypair2.clean();
