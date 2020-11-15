@@ -8,20 +8,14 @@ class HomeScreen extends GetView<HomeController> {
       appBar: AppBar(
         title: Image.asset('assets/png/logo.png', height: 25.h),
         centerTitle: true,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 16.w),
-          child: const CircleAvatar(
-            backgroundColor: AppColors.primary,
-            child: Text('DS'),
-          ),
-        ),
+        leading: const _Me(name: 'Drew Stone'),
         automaticallyImplyLeading: false,
         elevation: 0,
       ),
       body: Column(
         children: [
           SizedBox(height: 45.h),
-          Obx(() => _TokensValue(controller.tokensFormated.value)),
+          Obx(() => TokensValue(controller.tokensFormated.value)),
           SizedBox(height: 4.h.toDouble()),
           FittedBox(
             fit: BoxFit.fitWidth,
@@ -48,7 +42,10 @@ class HomeScreen extends GetView<HomeController> {
           Button(
             text: 'Send',
             textColor: Colors.black,
-            onPressed: () {},
+            onPressed: () {
+              // TODO(shekohex): call transfer here from controller
+              Get.toNamed(Routes.walletTransfer);
+            },
             variant: ButtonVariant.outline,
           ),
           SizedBox(height: 40.h),
@@ -58,8 +55,31 @@ class HomeScreen extends GetView<HomeController> {
   }
 }
 
-class _TokensValue extends StatelessWidget {
-  const _TokensValue(String value) : _value = value;
+class _Me extends StatelessWidget {
+  const _Me({
+    Key key,
+    this.name,
+  }) : super(key: key);
+  final String name;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: 16.w),
+      child: GestureDetector(
+        child: CircleAvatar(
+          child: Text(
+            nameFormat(name),
+            style: TextStyle(fontSize: 16.ssp),
+          ),
+        ),
+        onTap: () => Get.toNamed(Routes.me),
+      ),
+    );
+  }
+}
+
+class TokensValue extends StatelessWidget {
+  const TokensValue(String value) : _value = value;
   final String _value;
   @override
   Widget build(BuildContext context) {

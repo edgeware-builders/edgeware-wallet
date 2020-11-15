@@ -19,7 +19,10 @@ class Routes {
   static const String home = '/home';
   static const String me = '/me';
   static const String myInformation = '/me/info';
+  static const String myContacts = '/me/contacts';
   static const String settings = '/me/settings';
+  static const String legal = '/me/legal';
+  static const String walletTransfer = '/wallet-transfer';
 }
 
 const String mainNetRpcEndpoint = 'wss://mainnet1.edgewa.re/';

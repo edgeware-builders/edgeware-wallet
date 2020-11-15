@@ -43,6 +43,8 @@
 	<false/>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>To Scan QR Codes</string>
 
 </dict>
 </plist>

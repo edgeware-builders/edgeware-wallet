@@ -65,5 +65,34 @@ List<GetPage> _buildPages() {
       page: () => HomeScreen(),
       binding: HomeBindings(),
     ),
+    GetPage(
+      name: Routes.walletTransfer,
+      page: () => TransferScreen(),
+      binding: TransferBindings(),
+    ),
+    GetPage(
+      name: Routes.me,
+      page: () => MeScreen(),
+      binding: MeBindings(),
+    ),
+    GetPage(
+      name: Routes.myInformation,
+      page: () => MyInformationScreen(),
+      binding: MyInformationBindings(),
+    ),
+    GetPage(
+      name: Routes.myContacts,
+      page: () => ContactsScreen(),
+      binding: ContactsBindings(),
+    ),
+    GetPage(
+      name: Routes.settings,
+      page: () => SettingsScreen(),
+      binding: SettingsBindings(),
+    ),
+    GetPage(
+      name: Routes.legal,
+      page: () => LegalScreen(),
+    ),
   ];
 }

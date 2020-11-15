@@ -32,3 +32,38 @@ class HomeBindings extends Bindings {
     Get.put(HomeController());
   }
 }
+
+class MeBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(MeController());
+  }
+}
+
+class MyInformationBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(MeController());
+  }
+}
+
+class ContactsBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(ContactsController());
+  }
+}
+
+class SettingsBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(SettingsController());
+  }
+}
+
+class TransferBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(TransferController());
+  }
+}
