@@ -89,3 +89,18 @@ macro_rules! ffi_array {
         }
     };
 }
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! rpc_client {
+    ($ptr:expr) => {
+        $crate::rpc_client!($ptr, err = 0);
+    };
+
+    ($ptr:expr, err = $err:expr) => {
+        match $ptr.cast::<crate::client::RpcClient>().as_ref() {
+            Some(v) => v,
+            None => return $err,
+        }
+    };
+}

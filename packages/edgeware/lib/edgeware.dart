@@ -1,22 +1,32 @@
 library edgeware;
 
+import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:ffi/ffi.dart';
 
+import 'package:ffi/ffi.dart';
+import 'package:isolate/isolate.dart';
+import 'package:meta/meta.dart';
+
+import 'allo_isolate.dart';
 import 'extensions.dart';
 import 'ffi.dart' as ffi;
+import 'models/models.dart';
+
+export 'models/models.dart';
 
 /// Edgeware Rust Binding.
 /// this a high level abstraction over the FFI
 class Edgeware {
   Edgeware() : _dl = _load() {
     _lib ??= ffi.RawEdgeware(_dl);
+    AlloIsolate(_dl).hook();
   }
   final DynamicLibrary _dl;
   ffi.RawEdgeware _lib;
   Pointer<Void> _keypair = nullptr;
+  Pointer<Void> _rpc = nullptr;
 
   KeyPair generateKeyPair(String password) {
     _keypair = _lib.edg_keypair_new(password.toPointer().cast());
@@ -71,6 +81,46 @@ class Edgeware {
   void cleanKeyPair() {
     _lib.edg_keypair_free(_keypair);
     _keypair = nullptr;
+  }
+
+  Future<void> initRpcClient({@required String url}) async {
+    final completer = Completer<dynamic>();
+    final port = singleCompletePort(completer);
+    final result = _lib.edg_rpc_client_init(
+      port.nativePort,
+      url.toPointer().cast(),
+    );
+    assert(result == 1);
+    final res = await completer.future;
+    if (res is int) {
+      _rpc = Pointer.fromAddress(res);
+    } else if (res is String) {
+      throw StateError(res);
+    } else {
+      throw StateError('Got unknown type: ${res.runtimeType} $res');
+    }
+  }
+
+  Future<void> queryAccountInfo({@required String ss58}) async {
+    final completer = Completer<dynamic>();
+    final port = singleCompletePort(completer);
+    final result = _lib.edg_rpc_client_query_account_info(
+      port.nativePort,
+      _rpc,
+      ss58.toPointer().cast(),
+    );
+    assert(result == 1);
+    final res = await completer.future;
+    if (res is int) {
+      final info = Pointer<ffi.AccountInfo>.fromAddress(res);
+      final accountInfo = AccountInfo.fromFFI(info.ref);
+      _lib.edg_account_info_free(info);
+      print(accountInfo);
+    } else if (res is String) {
+      throw StateError(res);
+    } else {
+      throw StateError('Got unknown type: ${res.runtimeType} $res');
+    }
   }
 }
 

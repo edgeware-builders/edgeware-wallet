@@ -5,13 +5,22 @@ use substrate_subxt::sp_core::{
 };
 
 mod array;
+mod client;
 mod crypto;
 mod error;
 mod macros;
+mod models;
+mod runtime;
+mod shared_ptr;
+mod utils;
 
 pub use array::FfiArray;
+pub use models::*;
+
+use shared_ptr::SharedPtr;
 
 type RawKeyPair = *const ffi::c_void;
+type RawRpcClient = *const ffi::c_void;
 type RawFfiArray = *const FfiArray;
 type RawMutFfiArray = *mut FfiArray;
 
@@ -44,7 +53,7 @@ pub unsafe extern "C" fn edg_keypair_init(
 ) -> RawKeyPair {
     let password = cstr!(password);
     let entropy = ffi_array!(entropy);
-    let keypair = crypto::KeyPair::init(entropy.as_ref().to_owned(), password);
+    let keypair = crypto::KeyPair::init(entropy.to_vec(), password);
     let boxed = Box::new(keypair);
     Box::into_raw(boxed) as _
 }
@@ -70,7 +79,8 @@ pub unsafe extern "C" fn edg_keypair_restore(
 /// Backup KeyPair and get a Mnemonic phrase.
 ///
 /// ### Note
-/// you should call `edg_string_free` to free this string after you done with it.
+/// you should call `edg_string_free` to free this string after you done with
+/// it.
 ///
 /// ### Safety
 /// this assumes that `keypair` is not null and it is a valid `KeyPair`.
@@ -88,7 +98,8 @@ pub unsafe extern "C" fn edg_keypair_backup(
 /// Get `KeyPair`'s Public Key in ss58 format.
 ///
 /// ### Note
-/// you should call `edg_string_free` to free this string after you done with it.
+/// you should call `edg_string_free` to free this string after you done with
+/// it.
 ///
 /// ### Safety
 /// this assumes that `keypair` is not null and it is a valid `KeyPair`.
@@ -131,6 +142,54 @@ pub unsafe extern "C" fn edg_keypair_entropy(
     1
 }
 
+/// Create and Init the RPC Client return 1 (true).
+/// the RPC Client pointer is reterned over the port.
+///
+/// The Pointer is just a number that can be derefrenced to get the data.
+/// ### Safety
+/// this assumes that `url` is not null and it is a valid utf8 string`.
+// otherwise, this function will 0 (false).
+#[no_mangle]
+pub unsafe extern "C" fn edg_rpc_client_init(
+    port: i64,
+    url: *const raw::c_char,
+) -> i32 {
+    let url = cstr!(url, err = 0);
+    let isolate = allo_isolate::Isolate::new(port);
+    let task = isolate.catch_unwind(async move {
+        let c = client::RpcClient::init(url.to_owned()).await?;
+        let boxed = Box::new(c);
+        let ptr = Box::into_raw(boxed);
+        Result::<_, error::Error>::Ok(SharedPtr(ptr as _))
+    });
+    runtime::spawn(task);
+    1
+}
+
+/// Query the chain for Account Info return 1 (true).
+/// the `AccountInfo` pointer is reterned over the port.
+///
+/// The Pointer is just a number that can be derefrenced to get the data.
+/// ### Safety
+/// this assumes that `ss58` is not null and it is a valid utf8 `string`.
+// otherwise, this function will 0 (false).
+#[no_mangle]
+pub unsafe extern "C" fn edg_rpc_client_query_account_info(
+    port: i64,
+    client: RawRpcClient,
+    ss58: *const raw::c_char,
+) -> i32 {
+    let ss58 = cstr!(ss58, err = 0);
+    let client = rpc_client!(client);
+    let isolate = allo_isolate::Isolate::new(port);
+    let task = isolate.catch_unwind(async move {
+        let info = client.query_account_info(ss58.to_owned()).await?;
+        Result::<_, error::Error>::Ok(info.into_shared_ptr())
+    });
+    runtime::spawn(task);
+    1
+}
+
 /// Free(Clean, Drop) the KeyPair.
 ///
 /// ### Safety
@@ -140,6 +199,18 @@ pub unsafe extern "C" fn edg_keypair_free(ptr: RawKeyPair) {
     if !ptr.is_null() {
         let pair = Box::from_raw(ptr as *mut crypto::KeyPair);
         pair.clean();
+    }
+}
+
+/// Free(Clean, Drop) the RpcClient.
+///
+/// ### Safety
+/// this assumes that `ptr` is not null ptr
+#[no_mangle]
+pub unsafe extern "C" fn edg_rpc_client_free(ptr: RawRpcClient) {
+    if !ptr.is_null() {
+        let client = Box::from_raw(ptr as *mut client::RpcClient);
+        drop(client);
     }
 }
 

@@ -4,6 +4,39 @@
 #include <stdlib.h>
 
 
+typedef struct AccountInfo {
+  /**
+   * Non-reserved part of the balance. There may still be restrictions on
+   * this, but it is the total pool what may in principle be
+   * transferred, reserved and used for tipping.
+   *
+   * This is the only balance that matters in terms of most operations on
+   * tokens. It alone is used to determine the balance when in the
+   * contract execution environment.
+   */
+  const char *free;
+  /**
+   * Balance which is reserved and may not be used at all.
+   *
+   * This can still get slashed, but gets slashed last of all.
+   *
+   * This balance is a 'reserve' balance that other subsystems use in order
+   * to set aside tokens that are still 'owned' by the account holder,
+   * but which are suspendable.
+   */
+  const char *reserved;
+  /**
+   * The amount that `free` may not drop below when withdrawing for
+   * *anything except transaction fee payment*.
+   */
+  const char *misc_frozen;
+  /**
+   * The amount that `free` may not drop below when withdrawing specifically
+   * for transaction fee payment.
+   */
+  const char *fee_frozen;
+} AccountInfo;
+
 typedef const void *RawKeyPair;
 
 /**
@@ -18,11 +51,22 @@ typedef FfiArray *RawMutFfiArray;
 
 typedef const FfiArray *RawFfiArray;
 
+typedef const void *RawRpcClient;
+
+/**
+ * Free (Drop) `AccountInfo` allocated by Rust.
+ *
+ * ### Safety
+ * this assumes that the given pointer is not null.
+ */
+void edg_account_info_free(AccountInfo *ptr);
+
 /**
  * Backup KeyPair and get a Mnemonic phrase.
  *
  * ### Note
- * you should call `edg_string_free` to free this string after you done with it.
+ * you should call `edg_string_free` to free this string after you done with
+ * it.
  *
  * ### Safety
  * this assumes that `keypair` is not null and it is a valid `KeyPair`.
@@ -75,7 +119,8 @@ RawKeyPair edg_keypair_new(const char *password);
  * Get `KeyPair`'s Public Key in ss58 format.
  *
  * ### Note
- * you should call `edg_string_free` to free this string after you done with it.
+ * you should call `edg_string_free` to free this string after you done with
+ * it.
  *
  * ### Safety
  * this assumes that `keypair` is not null and it is a valid `KeyPair`.
@@ -96,6 +141,34 @@ RawKeyPair edg_keypair_restore(const char *phrase, const char *password);
  * this a noop function, so it dose not make sense to call it yourself.
  */
 void edg_link_me_please(void);
+
+/**
+ * Free(Clean, Drop) the RpcClient.
+ *
+ * ### Safety
+ * this assumes that `ptr` is not null ptr
+ */
+void edg_rpc_client_free(RawRpcClient ptr);
+
+/**
+ * Create and Init the RPC Client return 1 (true).
+ * the RPC Client pointer is reterned over the port.
+ *
+ * The Pointer is just a number that can be derefrenced to get the data.
+ * ### Safety
+ * this assumes that `url` is not null and it is a valid utf8 string`.
+ */
+int32_t edg_rpc_client_init(int64_t port, const char *url);
+
+/**
+ * Query the chain for Account Info return 1 (true).
+ * the `AccountInfo` pointer is reterned over the port.
+ *
+ * The Pointer is just a number that can be derefrenced to get the data.
+ * ### Safety
+ * this assumes that `ss58` is not null and it is a valid utf8 `string`.
+ */
+int32_t edg_rpc_client_query_account_info(int64_t port, RawRpcClient client, const char *ss58);
 
 /**
  * Free (Drop) a string value allocated by Rust.

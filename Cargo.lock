@@ -61,6 +61,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "allo-isolate"
+version = "0.1.8-beta"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57ee84211d30a654b6bd441989dc89a26e7c43e53d33213a55bb421c30a2e8c2"
+dependencies = [
+ "pin-project 0.4.27",
+]
+
+[[package]]
 name = "ansi_term"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -706,7 +715,9 @@ dependencies = [
 name = "edgeware"
 version = "0.1.0"
 dependencies = [
+ "allo-isolate",
  "anyhow",
+ "async-std",
  "log",
  "substrate-subxt",
  "thiserror",

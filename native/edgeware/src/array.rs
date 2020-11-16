@@ -22,9 +22,7 @@ impl AsMut<[u8]> for FfiArray {
 impl FfiArray {
     /// Copies all elements from `bytes` into our buffer, using a memcpy.
     /// The length of `bytes` must be the same as our buffer length.
-    ///
-    /// ### Panics
-    /// This function will panic if the two slices have different lengths.
+    /// otherwise, it will return Error.
     pub fn write(&mut self, bytes: &[u8]) -> Result<(), ()> {
         if self.len() == bytes.len() {
             self.as_mut().copy_from_slice(bytes);
@@ -34,11 +32,9 @@ impl FfiArray {
         }
     }
 
-    pub fn len(&self) -> usize {
-        self.len
-    }
+    pub fn to_vec(&self) -> Vec<u8> { self.as_ref().to_vec() }
 
-    pub fn is_empty(&self) -> bool {
-        self.len == 0
-    }
+    pub fn len(&self) -> usize { self.len }
+
+    pub fn is_empty(&self) -> bool { self.len == 0 }
 }

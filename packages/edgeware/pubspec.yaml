@@ -9,6 +9,8 @@ environment:
 
 dependencies:
   ffi:
+  isolate:
+  meta:
 
 dev_dependencies:
   ffigen: ^1.1.0

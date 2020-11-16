@@ -67,13 +67,9 @@ impl KeyPair {
         drop(self.pair);
     }
 
-    pub fn pair(&self) -> &Pair {
-        &self.pair
-    }
+    pub fn pair(&self) -> &Pair { &self.pair }
 
-    pub fn entropy(&self) -> &[u8] {
-        self.entropy.as_slice()
-    }
+    pub fn entropy(&self) -> &[u8] { self.entropy.as_slice() }
 }
 
 #[cfg(test)]

@@ -1,8 +1,11 @@
+import 'package:edgeware/edgeware.dart';
 import 'package:wallet/wallet.dart';
 
 class AppBindings extends Bindings {
   @override
-  Future<void> dependencies() async {}
+  Future<void> dependencies() async {
+    Get.put(Edgeware());
+  }
 }
 
 class SplashBindings extends Bindings {

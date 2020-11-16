@@ -17,3 +17,6 @@ zeroize = "1.1"
 tiny-bip39 = "0.8"
 thiserror = "^1.0"
 anyhow = "^1.0"
+allo-isolate = { version = "0.1.8-beta", features = ["catch-unwind"] }
+async-std = "1.7"
+

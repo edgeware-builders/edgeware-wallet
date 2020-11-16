@@ -11,10 +11,27 @@ class RawEdgeware {
   /// The symbols are looked up in [dynamicLibrary].
   RawEdgeware(ffi.DynamicLibrary dynamicLibrary) : _dylib = dynamicLibrary;
 
+  /// Free (Drop) `AccountInfo` allocated by Rust.
+  ///
+  /// ### Safety
+  /// this assumes that the given pointer is not null.
+  void edg_account_info_free(
+    ffi.Pointer<AccountInfo> ptr,
+  ) {
+    _edg_account_info_free ??= _dylib.lookupFunction<_c_edg_account_info_free,
+        _dart_edg_account_info_free>('edg_account_info_free');
+    return _edg_account_info_free(
+      ptr,
+    );
+  }
+
+  _dart_edg_account_info_free _edg_account_info_free;
+
   /// Backup KeyPair and get a Mnemonic phrase.
   ///
   /// ### Note
-  /// you should call `edg_string_free` to free this string after you done with it.
+  /// you should call `edg_string_free` to free this string after you done with
+  /// it.
   ///
   /// ### Safety
   /// this assumes that `keypair` is not null and it is a valid `KeyPair`.
@@ -115,7 +132,8 @@ class RawEdgeware {
   /// Get `KeyPair`'s Public Key in ss58 format.
   ///
   /// ### Note
-  /// you should call `edg_string_free` to free this string after you done with it.
+  /// you should call `edg_string_free` to free this string after you done with
+  /// it.
   ///
   /// ### Safety
   /// this assumes that `keypair` is not null and it is a valid `KeyPair`.
@@ -162,6 +180,66 @@ class RawEdgeware {
 
   _dart_edg_link_me_please _edg_link_me_please;
 
+  /// Free(Clean, Drop) the RpcClient.
+  ///
+  /// ### Safety
+  /// this assumes that `ptr` is not null ptr
+  void edg_rpc_client_free(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    _edg_rpc_client_free ??= _dylib.lookupFunction<_c_edg_rpc_client_free,
+        _dart_edg_rpc_client_free>('edg_rpc_client_free');
+    return _edg_rpc_client_free(
+      ptr,
+    );
+  }
+
+  _dart_edg_rpc_client_free _edg_rpc_client_free;
+
+  /// Create and Init the RPC Client return 1 (true).
+  /// the RPC Client pointer is reterned over the port.
+  ///
+  /// The Pointer is just a number that can be derefrenced to get the data.
+  /// ### Safety
+  /// this assumes that `url` is not null and it is a valid utf8 string`.
+  int edg_rpc_client_init(
+    int port,
+    ffi.Pointer<ffi.Int8> url,
+  ) {
+    _edg_rpc_client_init ??= _dylib.lookupFunction<_c_edg_rpc_client_init,
+        _dart_edg_rpc_client_init>('edg_rpc_client_init');
+    return _edg_rpc_client_init(
+      port,
+      url,
+    );
+  }
+
+  _dart_edg_rpc_client_init _edg_rpc_client_init;
+
+  /// Query the chain for Account Info return 1 (true).
+  /// the `AccountInfo` pointer is reterned over the port.
+  ///
+  /// The Pointer is just a number that can be derefrenced to get the data.
+  /// ### Safety
+  /// this assumes that `ss58` is not null and it is a valid utf8 `string`.
+  int edg_rpc_client_query_account_info(
+    int port,
+    ffi.Pointer<ffi.Void> client,
+    ffi.Pointer<ffi.Int8> ss58,
+  ) {
+    _edg_rpc_client_query_account_info ??= _dylib.lookupFunction<
+            _c_edg_rpc_client_query_account_info,
+            _dart_edg_rpc_client_query_account_info>(
+        'edg_rpc_client_query_account_info');
+    return _edg_rpc_client_query_account_info(
+      port,
+      client,
+      ss58,
+    );
+  }
+
+  _dart_edg_rpc_client_query_account_info _edg_rpc_client_query_account_info;
+
   /// Free (Drop) a string value allocated by Rust.
   ///
   /// ### Safety
@@ -180,6 +258,34 @@ class RawEdgeware {
   _dart_edg_string_free _edg_string_free;
 }
 
+class AccountInfo extends ffi.Struct {
+  /// Non-reserved part of the balance. There may still be restrictions on
+  /// this, but it is the total pool what may in principle be
+  /// transferred, reserved and used for tipping.
+  ///
+  /// This is the only balance that matters in terms of most operations on
+  /// tokens. It alone is used to determine the balance when in the
+  /// contract execution environment.
+  ffi.Pointer<ffi.Int8> free;
+
+  /// Balance which is reserved and may not be used at all.
+  ///
+  /// This can still get slashed, but gets slashed last of all.
+  ///
+  /// This balance is a 'reserve' balance that other subsystems use in order
+  /// to set aside tokens that are still 'owned' by the account holder,
+  /// but which are suspendable.
+  ffi.Pointer<ffi.Int8> reserved;
+
+  /// The amount that `free` may not drop below when withdrawing for
+  /// *anything except transaction fee payment*.
+  ffi.Pointer<ffi.Int8> misc_frozen;
+
+  /// The amount that `free` may not drop below when withdrawing specifically
+  /// for transaction fee payment.
+  ffi.Pointer<ffi.Int8> fee_frozen;
+}
+
 /// A Fixed Sized FFI compatable Array (Buffer View)
 class FfiArray extends ffi.Struct {
   ffi.Pointer<ffi.Uint8> buf;
@@ -187,6 +293,14 @@ class FfiArray extends ffi.Struct {
   @ffi.Uint64()
   int len;
 }
+
+typedef _c_edg_account_info_free = ffi.Void Function(
+  ffi.Pointer<AccountInfo> ptr,
+);
+
+typedef _dart_edg_account_info_free = void Function(
+  ffi.Pointer<AccountInfo> ptr,
+);
 
 typedef _c_edg_keypair_backup = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Void> keypair,
@@ -253,6 +367,36 @@ typedef _dart_edg_keypair_restore = ffi.Pointer<ffi.Void> Function(
 typedef _c_edg_link_me_please = ffi.Void Function();
 
 typedef _dart_edg_link_me_please = void Function();
+
+typedef _c_edg_rpc_client_free = ffi.Void Function(
+  ffi.Pointer<ffi.Void> ptr,
+);
+
+typedef _dart_edg_rpc_client_free = void Function(
+  ffi.Pointer<ffi.Void> ptr,
+);
+
+typedef _c_edg_rpc_client_init = ffi.Int32 Function(
+  ffi.Int64 port,
+  ffi.Pointer<ffi.Int8> url,
+);
+
+typedef _dart_edg_rpc_client_init = int Function(
+  int port,
+  ffi.Pointer<ffi.Int8> url,
+);
+
+typedef _c_edg_rpc_client_query_account_info = ffi.Int32 Function(
+  ffi.Int64 port,
+  ffi.Pointer<ffi.Void> client,
+  ffi.Pointer<ffi.Int8> ss58,
+);
+
+typedef _dart_edg_rpc_client_query_account_info = int Function(
+  int port,
+  ffi.Pointer<ffi.Void> client,
+  ffi.Pointer<ffi.Int8> ss58,
+);
 
 typedef _c_edg_string_free = ffi.Void Function(
   ffi.Pointer<ffi.Int8> ptr,
