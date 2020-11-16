@@ -101,7 +101,7 @@ class Edgeware {
     }
   }
 
-  Future<void> queryAccountInfo({@required String ss58}) async {
+  Future<AccountInfo> queryAccountInfo({@required String ss58}) async {
     final completer = Completer<dynamic>();
     final port = singleCompletePort(completer);
     final result = _lib.edg_rpc_client_query_account_info(
@@ -115,7 +115,32 @@ class Edgeware {
       final info = Pointer<ffi.AccountInfo>.fromAddress(res);
       final accountInfo = AccountInfo.fromFFI(info.ref);
       _lib.edg_account_info_free(info);
-      print(accountInfo);
+      return accountInfo;
+    } else if (res is String) {
+      throw StateError(res);
+    } else {
+      throw StateError('Got unknown type: ${res.runtimeType} $res');
+    }
+  }
+
+  Future<void> balanceTransfer({
+    @required String toSs58,
+    @required BigInt amount,
+  }) async {
+    final completer = Completer<dynamic>();
+    final port = singleCompletePort(completer);
+    final result = _lib.edg_rpc_client_balance_transfer(
+      port.nativePort,
+      _rpc,
+      _keypair,
+      toSs58.toPointer().cast(),
+      amount.toString().toPointer().cast(),
+    );
+    assert(result == 1);
+    final res = await completer.future;
+    print(res);
+    if (res is int) {
+      return;
     } else if (res is String) {
       throw StateError(res);
     } else {

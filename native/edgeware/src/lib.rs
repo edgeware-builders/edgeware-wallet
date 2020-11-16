@@ -157,7 +157,7 @@ pub unsafe extern "C" fn edg_rpc_client_init(
     let url = cstr!(url, err = 0);
     let isolate = allo_isolate::Isolate::new(port);
     let task = isolate.catch_unwind(async move {
-        let c = client::RpcClient::init(url.to_owned()).await?;
+        let c = client::RpcClient::init(url).await?;
         let boxed = Box::new(c);
         let ptr = Box::into_raw(boxed);
         Result::<_, error::Error>::Ok(SharedPtr(ptr as _))
@@ -183,8 +183,37 @@ pub unsafe extern "C" fn edg_rpc_client_query_account_info(
     let client = rpc_client!(client);
     let isolate = allo_isolate::Isolate::new(port);
     let task = isolate.catch_unwind(async move {
-        let info = client.query_account_info(ss58.to_owned()).await?;
+        let info = client.query_account_info(ss58).await?;
         Result::<_, error::Error>::Ok(info.into_shared_ptr())
+    });
+    runtime::spawn(task);
+    1
+}
+
+/// Transfer `amount` from the provided `KeyPair` to the provided address.
+///
+/// The Pointer is just a number that can be derefrenced to get the data.
+/// ### Safety
+/// this assumes that `to_ss58` is not null and it is a valid utf8 `string`.
+/// this assumes that `client` is not null and it is a valid RpcClient.
+/// this assumes that `keypair` is not null and it is a valid KeyPair.
+// otherwise, this function will 0 (false).
+#[no_mangle]
+pub unsafe extern "C" fn edg_rpc_client_balance_transfer(
+    port: i64,
+    client: RawRpcClient,
+    keypair: RawKeyPair,
+    to_ss58: *const raw::c_char,
+    amount: *const raw::c_char,
+) -> i32 {
+    let ss58 = cstr!(to_ss58, err = 0);
+    let amout = u128_parse!(amount);
+    let keypair = keypair!(keypair, err = 0);
+    let client = rpc_client!(client);
+    let isolate = allo_isolate::Isolate::new(port);
+    let task = isolate.catch_unwind(async move {
+        client.balance_transfer(keypair, ss58, amout).await?;
+        Result::<_, error::Error>::Ok(true)
     });
     runtime::spawn(task);
     1

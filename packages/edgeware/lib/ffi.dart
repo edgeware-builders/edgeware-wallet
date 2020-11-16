@@ -180,6 +180,35 @@ class RawEdgeware {
 
   _dart_edg_link_me_please _edg_link_me_please;
 
+  /// Transfer `amount` from the provided `KeyPair` to the provided address.
+  ///
+  /// The Pointer is just a number that can be derefrenced to get the data.
+  /// ### Safety
+  /// this assumes that `to_ss58` is not null and it is a valid utf8 `string`.
+  /// this assumes that `client` is not null and it is a valid RpcClient.
+  /// this assumes that `keypair` is not null and it is a valid KeyPair.
+  int edg_rpc_client_balance_transfer(
+    int port,
+    ffi.Pointer<ffi.Void> client,
+    ffi.Pointer<ffi.Void> keypair,
+    ffi.Pointer<ffi.Int8> to_ss58,
+    ffi.Pointer<ffi.Int8> amount,
+  ) {
+    _edg_rpc_client_balance_transfer ??= _dylib.lookupFunction<
+            _c_edg_rpc_client_balance_transfer,
+            _dart_edg_rpc_client_balance_transfer>(
+        'edg_rpc_client_balance_transfer');
+    return _edg_rpc_client_balance_transfer(
+      port,
+      client,
+      keypair,
+      to_ss58,
+      amount,
+    );
+  }
+
+  _dart_edg_rpc_client_balance_transfer _edg_rpc_client_balance_transfer;
+
   /// Free(Clean, Drop) the RpcClient.
   ///
   /// ### Safety
@@ -367,6 +396,22 @@ typedef _dart_edg_keypair_restore = ffi.Pointer<ffi.Void> Function(
 typedef _c_edg_link_me_please = ffi.Void Function();
 
 typedef _dart_edg_link_me_please = void Function();
+
+typedef _c_edg_rpc_client_balance_transfer = ffi.Int32 Function(
+  ffi.Int64 port,
+  ffi.Pointer<ffi.Void> client,
+  ffi.Pointer<ffi.Void> keypair,
+  ffi.Pointer<ffi.Int8> to_ss58,
+  ffi.Pointer<ffi.Int8> amount,
+);
+
+typedef _dart_edg_rpc_client_balance_transfer = int Function(
+  int port,
+  ffi.Pointer<ffi.Void> client,
+  ffi.Pointer<ffi.Void> keypair,
+  ffi.Pointer<ffi.Int8> to_ss58,
+  ffi.Pointer<ffi.Int8> amount,
+);
 
 typedef _c_edg_rpc_client_free = ffi.Void Function(
   ffi.Pointer<ffi.Void> ptr,

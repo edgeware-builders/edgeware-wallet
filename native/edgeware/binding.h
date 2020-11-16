@@ -143,6 +143,21 @@ RawKeyPair edg_keypair_restore(const char *phrase, const char *password);
 void edg_link_me_please(void);
 
 /**
+ * Transfer `amount` from the provided `KeyPair` to the provided address.
+ *
+ * The Pointer is just a number that can be derefrenced to get the data.
+ * ### Safety
+ * this assumes that `to_ss58` is not null and it is a valid utf8 `string`.
+ * this assumes that `client` is not null and it is a valid RpcClient.
+ * this assumes that `keypair` is not null and it is a valid KeyPair.
+ */
+int32_t edg_rpc_client_balance_transfer(int64_t port,
+                                        RawRpcClient client,
+                                        RawKeyPair keypair,
+                                        const char *to_ss58,
+                                        const char *amount);
+
+/**
  * Free(Clean, Drop) the RpcClient.
  *
  * ### Safety

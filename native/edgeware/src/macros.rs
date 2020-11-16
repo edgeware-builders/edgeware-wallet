@@ -104,3 +104,18 @@ macro_rules! rpc_client {
         }
     };
 }
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! u128_parse {
+    ($ptr:expr) => {
+        $crate::u128_parse!($ptr, err = 0);
+    };
+    ($ptr:expr, err = $err:expr) => {{
+        let s = $crate::cstr!($ptr, err = $err);
+        match s.parse::<u128>() {
+            Ok(val) => val,
+            Err(_) => return $err,
+        }
+    }};
+}

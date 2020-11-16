@@ -1,7 +1,6 @@
 //! Contains Plain Structs that get sent to/from FFI
 
-use std::ffi::CString;
-use std::os::raw;
+use std::{ffi::CString, os::raw};
 
 use crate::shared_ptr::SharedPtr;
 
@@ -50,6 +49,7 @@ impl AccountInfo {
                 .into_raw(),
         }
     }
+
     /// Convert `Self` into a raw pointer ready to be sent over ffi.
     /// ### Safety
     /// must call `edg_account_info_free` after done with struct.
