@@ -45,6 +45,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>To Scan QR Codes</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>For Account Authorization</string>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 

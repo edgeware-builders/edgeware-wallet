@@ -20,7 +20,7 @@ This project uses [cargo make](https://github.com/sagiegurari/cargo-make) to com
 
 -   [x] Generate a new Edgeware Account.
 -   [x] Backup/Restore your account using `Paper Key` (Seed Phrase).
--   [ ] Transfer `EDG` to other accounts.
+-   [ ] Transfer `EDG` to your contacts.
 -   [x] Keep track of your contacts (view balances, share contacts).
 -   [x] Share your account using QR Code and add contacts by scanning the QR Code.
 -   [ ] Biometric Authorization when sending tokens instead of using passwords (Face ID, Touch ID, Fingerprint, ..etc).
