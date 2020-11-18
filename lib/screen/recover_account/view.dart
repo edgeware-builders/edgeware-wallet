@@ -19,13 +19,30 @@ class RecoverAccountScreen extends GetView<RecoverAccountController> {
             ),
           ),
           SizedBox(height: 15.h),
-          const Input(
-            hintText: 'cute asthma joy knee trade strong '
-                'satisfy muffin doctor acoustic maple battle',
-            maxLines: 4,
+          Obx(
+            () => Input(
+              hintText: 'cute asthma joy knee trade strong '
+                  'satisfy muffin doctor acoustic maple battle',
+              maxLines: 4,
+              controller: controller.paperKeyController,
+              errorText: controller.paperKeyError.value,
+              onChanged: (_) {
+                controller.paperKeyError.value = '';
+              },
+            ),
           ),
           SizedBox(height: 8.h),
-          const Input(hintText: 'Password', obscureText: true),
+          Obx(
+            () => Input(
+              hintText: 'Password',
+              obscureText: true,
+              controller: controller.password1Controller,
+              errorText: controller.password1Error.value,
+              onChanged: (_) {
+                controller.password1Error.value = '';
+              },
+            ),
+          ),
           SizedBox(height: 8.h),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),

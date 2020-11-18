@@ -54,7 +54,15 @@ class ContactsScreen extends GetView<ContactsController> {
         tooltip: 'Add a Contact',
         backgroundColor: AppColors.primary,
         child: const Icon(Icons.person_add),
-        onPressed: () {},
+        onPressed: () async {
+          final contact = await Get.bottomSheet(
+            _AddNewContactSheet(),
+            enableDrag: true,
+            isDismissible: true,
+            useRootNavigator: false,
+          );
+          print(contact);
+        },
       ),
     );
   }
@@ -90,6 +98,46 @@ class ContactTile extends StatelessWidget {
         child: Text(trailingText),
         textColor: AppColors.primary,
         onPressed: onPressed,
+      ),
+    );
+  }
+}
+
+class _AddNewContactSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    String fullname, address;
+    return Container(
+      color: Colors.white,
+      height: 250.h,
+      child: Column(
+        children: [
+          SizedBox(height: 16.h),
+          Input(
+            hintText: 'Fullname',
+            onChanged: (v) {
+              fullname = v;
+            },
+          ),
+          SizedBox(height: 8.h),
+          Input(
+            hintText: 'Address',
+            onChanged: (v) {
+              address = v;
+            },
+          ),
+          SizedBox(height: 16.h),
+          Button(
+            text: 'Save',
+            onPressed: () {
+              Get.back(
+                result: Contact(fullName: fullname, address: address),
+                closeOverlays: false,
+              );
+            },
+          ),
+          SizedBox(height: 16.h),
+        ],
       ),
     );
   }

@@ -4,10 +4,11 @@ String nameFormat(String name) {
     final firstLetter = parts.first[0];
     final lastLetter = parts.last[0];
     return '$firstLetter$lastLetter'.toUpperCase();
-  } else {
-    assert(name.length >= 2);
+  } else if (name.length >= 2) {
     final firstLetter = name[0];
     final secondLetter = name[1];
     return '$firstLetter$secondLetter'.toUpperCase();
+  } else {
+    return '?';
   }
 }

@@ -8,7 +8,7 @@ class HomeScreen extends GetView<HomeController> {
       appBar: AppBar(
         title: Image.asset('assets/png/logo.png', height: 25.h),
         centerTitle: true,
-        leading: const _Me(name: 'Drew Stone'),
+        leading: Obx(() => _Me(name: controller.fullname.value)),
         automaticallyImplyLeading: false,
         elevation: 0,
       ),
@@ -39,14 +39,16 @@ class HomeScreen extends GetView<HomeController> {
             },
           ),
           SizedBox(height: 30.h.toDouble()),
-          Button(
-            text: 'Send',
-            textColor: Colors.black,
-            onPressed: () {
-              // TODO(shekohex): call transfer here from controller
-              Get.toNamed(Routes.walletTransfer);
-            },
-            variant: ButtonVariant.outline,
+          Obx(
+            () => Button(
+              text: 'Send',
+              textColor: Colors.black,
+              enabled: controller.tokens.value != '0',
+              onPressed: () {
+                controller.doWalletTransfer();
+              },
+              variant: ButtonVariant.outline,
+            ),
           ),
           SizedBox(height: 40.h),
         ],

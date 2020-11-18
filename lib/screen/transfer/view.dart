@@ -14,11 +14,14 @@ class TransferScreen extends GetView<TransferController> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Text(
-              'Who you want to send 1000 EDG?',
-              style: TextStyle(
-                fontSize: 18.ssp,
-                color: Colors.black54,
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                'Who you want to send ${controller.op.amount} EDG?',
+                style: TextStyle(
+                  fontSize: 18.ssp,
+                  color: Colors.black54,
+                ),
               ),
             ),
           ),
@@ -42,7 +45,7 @@ class TransferScreen extends GetView<TransferController> {
                   trailingText: 'SEND',
                   onPressed: () {
                     // TODO(shekohex): do the transaction here
-                    Get.to(
+                    Get.offAll(
                       _TransactionSuccess(
                         name: 'Shady Khalifa',
                         address:
@@ -84,60 +87,67 @@ class _TransactionSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 170.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Text(
-              'You Sent $name',
-              style: TextStyle(
-                fontSize: 26.ssp,
-                color: Colors.black,
+    return WillPopScope(
+      onWillPop: () async {
+        // ignore: unawaited_futures
+        Get.offAllNamed(Routes.home);
+        return true;
+      },
+      child: Scaffold(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 170.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: Text(
+                'You Sent $name',
+                style: TextStyle(
+                  fontSize: 26.ssp,
+                  color: Colors.black,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 8.h),
-          const Expanded(child: SizedBox()),
-          TokensValue(edgFormat(amount)),
-          SizedBox(height: 8.h),
-          FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(
-              'EDG $amount',
-              style: TextStyle(
-                fontSize: 14.ssp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black45,
+            SizedBox(height: 8.h),
+            const Expanded(child: SizedBox()),
+            TokensValue(edgFormat(amount)),
+            SizedBox(height: 8.h),
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                'EDG $amount',
+                style: TextStyle(
+                  fontSize: 14.ssp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black45,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 16.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Text(
-              'Your current balance: ${edgFormat(currentBalance)}',
-              style: TextStyle(
-                fontSize: 14.ssp,
-                color: Colors.black45,
+            SizedBox(height: 16.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: Text(
+                'Your current balance: ${edgFormat(currentBalance)}',
+                style: TextStyle(
+                  fontSize: 14.ssp,
+                  color: Colors.black45,
+                ),
               ),
             ),
-          ),
-          const Expanded(child: SizedBox()),
-          SizedBox(height: 8.h),
-          Button(
-            text: 'Back',
-            onPressed: () {
-              Get.offAllNamed(Routes.home);
-            },
-            textColor: AppColors.primary,
-            variant: ButtonVariant.outline,
-          ),
-          SizedBox(height: 40.h),
-        ],
+            const Expanded(child: SizedBox()),
+            SizedBox(height: 8.h),
+            Button(
+              text: 'Back',
+              onPressed: () {
+                Get.offAllNamed(Routes.home);
+              },
+              textColor: AppColors.primary,
+              variant: ButtonVariant.outline,
+            ),
+            SizedBox(height: 40.h),
+          ],
+        ),
       ),
     );
   }
@@ -148,4 +158,11 @@ class _TransactionFailed extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold();
   }
+}
+
+class TransferOperation {
+  TransferOperation({
+    @required this.amount,
+  });
+  final BigInt amount;
 }

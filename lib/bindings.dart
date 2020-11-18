@@ -4,7 +4,11 @@ import 'package:wallet/wallet.dart';
 class AppBindings extends Bindings {
   @override
   Future<void> dependencies() async {
-    Get.put(Edgeware());
+    Get
+      ..put(Edgeware(), permanent: true)
+      ..put(SecureStorage(), permanent: true);
+    await Get.putAsync(Database.init, permanent: true);
+    await Get.putAsync(Preferences.init, permanent: true);
   }
 }
 
@@ -46,7 +50,7 @@ class MeBindings extends Bindings {
 class MyInformationBindings extends Bindings {
   @override
   void dependencies() {
-    Get.put(MeController());
+    Get.put(MyInformationController());
   }
 }
 

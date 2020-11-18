@@ -17,7 +17,7 @@ class Input extends StatelessWidget {
     this.textInputAction = TextInputAction.unspecified,
     this.textInputType = TextInputType.text,
     this.controller,
-    this.errorText,
+    this.errorText = '',
     this.initialValue,
     this.inputFormatters,
     this.onChanged,
@@ -80,7 +80,7 @@ class Input extends StatelessWidget {
         ),
         textAlign: TextAlign.start,
         decoration: InputDecoration(
-          errorText: errorText,
+          errorText: errorText.isNullOrBlank ? null : errorText,
           prefixIcon: prefixIcon,
           counterStyle: const TextStyle(color: Color(0xFF737373)),
           fillColor: AppColors.lightBackround,

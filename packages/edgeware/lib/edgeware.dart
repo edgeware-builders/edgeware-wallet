@@ -58,7 +58,9 @@ class Edgeware {
       phrase.toPointer().cast(),
       password.toPointer().cast(),
     );
-    assert(_keypair != nullptr);
+    if (_keypair == nullptr) {
+      throw StateError('invalid seed phrase.');
+    }
     final entropyOut = Uint8List(16).asFixed16ArrayPtr();
     final result = _lib.edg_keypair_entropy(_keypair, entropyOut);
     assert(result == 1);

@@ -19,20 +19,24 @@ class MeScreen extends GetView<MeController> {
       body: ListView(
         children: [
           CircleAvatar(
-            child: Text(
-              nameFormat('Drew Stone'),
-              style: TextStyle(fontSize: 38.ssp),
+            child: Obx(
+              () => Text(
+                nameFormat(controller.fullname.value),
+                style: TextStyle(fontSize: 38.ssp),
+              ),
             ),
             radius: 46,
           ),
           SizedBox(height: 12.h),
           Center(
-            child: Text(
-              edgFormat(BigInt.parse('99999')),
-              style: TextStyle(
-                fontSize: 18.ssp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black54,
+            child: Obx(
+              () => Text(
+                edgFormat(BigInt.parse(controller.currentBalance.value)),
+                style: TextStyle(
+                  fontSize: 18.ssp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black54,
+                ),
               ),
             ),
           ),

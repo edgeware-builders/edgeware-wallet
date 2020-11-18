@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:wallet/wallet.dart';
 
 class MyInformationScreen extends GetView<MyInformationController> {
@@ -6,7 +7,7 @@ class MyInformationScreen extends GetView<MyInformationController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Drew's Information"),
+        title: const Text('My Information'),
         elevation: 0,
       ),
       body: ListView(
@@ -14,7 +15,7 @@ class MyInformationScreen extends GetView<MyInformationController> {
           ListTile(
             title: const Text('Name'),
             subtitle: const Text('Add your full name'),
-            trailing: const Text('Drew Stone'),
+            trailing: Obx(() => Text(controller.fullname.value)),
             onTap: () {
               Get.to(_FullnameView());
             },
@@ -23,17 +24,27 @@ class MyInformationScreen extends GetView<MyInformationController> {
             title: const Text('Address'),
             subtitle: const Text('Long press to copy to clipboard'),
             trailing: Text(
-              addressFormat('5FBsymTnut7qBaE4w93KrsAoZKpaC1vxUZ2TZqNtVKi9FmG5'),
+              addressFormat(controller.address),
             ),
-            onTap: () {},
+            onLongPress: () {
+              Clipboard.setData(ClipboardData(text: controller.address));
+              showInfoSnackBar(message: 'Copied full address to clipboard');
+            },
           ),
           ListTile(
             title: const Text('Balance'),
             subtitle: const Text('Long press to copy view the full balance'),
-            trailing: Text(
-              edgFormat(BigInt.parse('99999')),
+            trailing: Obx(
+              () => Text(
+                edgFormat(BigInt.parse(controller.currentBalance.value)),
+              ),
             ),
-            onTap: () {},
+            onLongPress: () {
+              Clipboard.setData(
+                ClipboardData(text: controller.currentBalance.value),
+              );
+              showInfoSnackBar(message: 'Copied full balance to clipboard');
+            },
           ),
         ],
       ),
@@ -50,7 +61,9 @@ class _FullnameView extends GetView<MyInformationController> {
         elevation: 0,
         actions: [
           FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              controller.updateFullname();
+            },
             disabledTextColor: Colors.white38,
             child: const Text('SAVE'),
           ),
@@ -60,6 +73,7 @@ class _FullnameView extends GetView<MyInformationController> {
         children: [
           TextFormField(
             maxLength: 255,
+            controller: controller.fullnameController,
             enableSuggestions: true,
             style: const TextStyle(color: Colors.black),
             decoration: const InputDecoration(

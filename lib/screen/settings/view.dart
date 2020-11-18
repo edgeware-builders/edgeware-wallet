@@ -17,6 +17,7 @@ class SettingsScreen extends GetView<SettingsController> {
               'Show a paper key used to recover your account',
             ),
             onTap: () {
+              // TODO(shekohex): ask for password here.
               Get.to(_PaperKeyScreen());
             },
           ),
@@ -31,16 +32,7 @@ class SettingsScreen extends GetView<SettingsController> {
               'THIS WILL DESTROY EVERYTHING SAVED BY THE APPLICATION.',
             ),
             onTap: () {
-              Get.snackbar(
-                null,
-                'Not yet implemented :)',
-                snackStyle: SnackStyle.GROUNDED,
-                snackPosition: SnackPosition.BOTTOM,
-                colorText: Colors.black,
-                barBlur: 0,
-                borderRadius: 0,
-                backgroundColor: AppColors.lightBackround,
-              );
+              showInfoSnackBar(message: 'Not yet implemented :)');
             },
           ),
         ],
@@ -67,6 +59,7 @@ class _PaperKeyScreen extends GetView<SettingsController> {
           TextFormField(
             readOnly: true,
             maxLines: 5,
+            controller: controller.paperkeyController,
             style: const TextStyle(color: Colors.black),
             textAlign: TextAlign.justify,
             enableInteractiveSelection: true,

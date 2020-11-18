@@ -49,7 +49,7 @@ linter:
     - file_names
     - flutter_style_todos
     - hash_and_equals
-    - implementation_imports
+    #- implementation_imports
     - invariant_booleans
     - iterable_contains_unrelated_type
     - join_return_with_assignment
@@ -129,7 +129,6 @@ linter:
     - use_full_hex_values_for_flutter_colors
 analyzer:
   strong-mode:
-    implicit-casts: false
+    implicit-casts: true
     implicit-dynamic: true
   exclude:
-    - packages/**/lib/ffi.dart
