@@ -80,6 +80,11 @@ class Edgeware {
     return phrase;
   }
 
+  bool isValidEdgewareAddress(String value) {
+    final result = _lib.edg_check_ss58_format(value.toPointer().cast());
+    return result == 1;
+  }
+
   void cleanKeyPair() {
     _lib.edg_keypair_free(_keypair);
     _keypair = nullptr;

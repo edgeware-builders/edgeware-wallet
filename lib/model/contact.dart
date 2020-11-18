@@ -13,7 +13,7 @@ class Contact {
 
   factory Contact.fromMap(Map<String, dynamic> map) {
     return Contact(
-      contactId: int.parse(map['id']),
+      contactId: map['id'],
       address: map['address'],
       fullName: map['full_name'],
       createdAt: DateTime.parse(map['created_at']).toUtc(),
@@ -35,6 +35,7 @@ class Contact {
   final String fullName, address;
   DateTime createdAt, updatedAt;
   int contactId;
+  RxString currentBalance = '0'.obs;
 
   String get addressFormated => addressFormat(address);
 

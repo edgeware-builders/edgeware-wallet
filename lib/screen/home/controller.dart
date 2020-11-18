@@ -4,6 +4,11 @@ class HomeController extends GetxController with EdgewareAccountInfoMixin {
   final tokens = '0'.obs;
   final tokensFormated = '0'.obs;
 
+  @override
+  Future<void> onReady() async {
+    await super.onReady();
+  }
+
   void updateTokens(String value) {
     if (value.isNullOrBlank) {
       tokens.value = '0';

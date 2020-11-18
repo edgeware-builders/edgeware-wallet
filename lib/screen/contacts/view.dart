@@ -1,69 +1,111 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wallet/wallet.dart';
 
 class ContactsScreen extends GetView<ContactsController> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Contacts'),
-        elevation: 0,
-      ),
-      body: ListView.builder(
-        itemCount: 11,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: Input(
-                    prefixIcon: SvgPicture.asset(
-                      'assets/svg/search.svg',
-                      fit: BoxFit.scaleDown,
-                    ),
-                    hintText: 'Search',
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 10.w),
-                  child: IconButton(
-                    icon: Image.asset(
-                      'assets/png/qr.png',
-                      fit: BoxFit.scaleDown,
-                    ),
-                    splashRadius: 25,
-                    onPressed: () {},
-                  ),
-                ),
-              ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        controller.contacts.clear();
+        await controller.loadContacts();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Contacts'),
+          elevation: 0,
+        ),
+        body: Obx(
+          () {
+            final contacts = controller.contacts;
+            if (contacts.isEmpty) {
+              return const EmptyContactsSubView();
+            }
+            return ListView.builder(
+              itemCount: contacts.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return const _SearchBar();
+                } else {
+                  final contact = contacts[index - 1];
+                  return ContactTile(
+                    name: contact.fullName,
+                    address: contact.address,
+                    onTap: () {
+                      Get.bottomSheet(
+                        ContactInformationSheet(contact: contact),
+                        enableDrag: true,
+                        isDismissible: true,
+                        useRootNavigator: false,
+                      );
+                    },
+                    trailingOnPressed: () {
+                      Get.bottomSheet(
+                        ContactInformationSheet(contact: contact),
+                        enableDrag: true,
+                        isDismissible: true,
+                        useRootNavigator: false,
+                      );
+                    },
+                  );
+                }
+              },
             );
-          } else {
-            return ContactTile(
-              name: 'Shady Khalifa',
-              address: '5FPATeYHZTiYsFq3iZ8gtxzTKoDaYfHhFZAynah3wfzkyFEH',
-              onPressed: () {},
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          tooltip: 'Add a Contact',
+          backgroundColor: AppColors.primary,
+          child: const Icon(Icons.person_add),
+          onPressed: () async {
+            final contact = await Get.bottomSheet(
+              const _AddNewContactSheet(),
+              enableDrag: true,
+              isDismissible: true,
+              useRootNavigator: false,
             );
-          }
-        },
+            await controller.saveContact(contact);
+          },
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add a Contact',
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.person_add),
-        onPressed: () async {
-          final contact = await Get.bottomSheet(
-            _AddNewContactSheet(),
-            enableDrag: true,
-            isDismissible: true,
-            useRootNavigator: false,
-          );
-          print(contact);
-        },
-      ),
+    );
+  }
+}
+
+class _SearchBar extends GetView<ContactsController> {
+  const _SearchBar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: Input(
+            prefixIcon: SvgPicture.asset(
+              'assets/svg/search.svg',
+              fit: BoxFit.scaleDown,
+            ),
+            hintText: 'Search',
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(right: 10.w),
+          child: IconButton(
+            icon: Image.asset(
+              'assets/png/qr.png',
+              fit: BoxFit.scaleDown,
+            ),
+            splashRadius: 25,
+            onPressed: () {},
+          ),
+        ),
+      ],
     );
   }
 }
@@ -74,14 +116,18 @@ class ContactTile extends StatelessWidget {
     @required this.address,
     this.color = AppColors.primary,
     this.trailingText = 'VIEW',
-    this.onPressed,
+    this.onTap,
+    this.trailingOnPressed,
+    this.onLongPress,
     Key key,
   }) : super(key: key);
 
   final String name, address;
   final Color color;
   final String trailingText;
-  final FutureOr<void> Function() onPressed;
+  final FutureOr<void> Function() onTap;
+  final FutureOr<void> Function() onLongPress;
+  final FutureOr<void> Function() trailingOnPressed;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -97,13 +143,83 @@ class ContactTile extends StatelessWidget {
       trailing: FlatButton(
         child: Text(trailingText),
         textColor: AppColors.primary,
-        onPressed: onPressed,
+        onPressed: trailingOnPressed,
+      ),
+      onTap: onTap,
+      onLongPress: onLongPress,
+    );
+  }
+}
+
+class ContactInformationSheet extends GetView<ContactsController> {
+  const ContactInformationSheet({
+    @required this.contact,
+    Key key,
+  }) : super(key: key);
+  final Contact contact;
+  @override
+  Widget build(BuildContext context) {
+    controller.queryContactBalance(contact);
+    return Container(
+      color: Colors.white,
+      height: 280.h,
+      child: ListView(
+        children: [
+          const SizedBox(height: 8),
+          ListTile(
+            title: const Text('Name'),
+            trailing: Text(contact.fullName),
+          ),
+          ListTile(
+            title: const Text('Address'),
+            subtitle: const Text('Long press to copy to clipboard'),
+            trailing: Text(
+              addressFormat(contact.address),
+            ),
+            onLongPress: () {
+              Clipboard.setData(ClipboardData(text: contact.address));
+              showInfoSnackBar(message: 'Copied full address to clipboard');
+            },
+          ),
+          ListTile(
+            title: const Text('Balance'),
+            subtitle: const Text('Long press to copy the full balance'),
+            trailing: Obx(
+              () => Text(
+                edgFormat(BigInt.parse(contact.currentBalance.value)),
+              ),
+            ),
+            onLongPress: () {
+              Clipboard.setData(
+                ClipboardData(text: contact.currentBalance.value),
+              );
+              showInfoSnackBar(message: 'Copied full balance to clipboard');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EmptyContactsSubView extends StatelessWidget {
+  const EmptyContactsSubView({Key key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Such Empty, add some contacts',
+        style: TextStyle(
+          fontSize: 20.ssp,
+          color: AppColors.disabled,
+        ),
       ),
     );
   }
 }
 
 class _AddNewContactSheet extends StatelessWidget {
+  const _AddNewContactSheet({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     String fullname, address;

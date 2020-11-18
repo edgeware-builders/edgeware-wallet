@@ -8,6 +8,9 @@ String nameFormat(String name) {
     final firstLetter = name[0];
     final secondLetter = name[1];
     return '$firstLetter$secondLetter'.toUpperCase();
+  } else if (name.isNotEmpty) {
+    final firstLetter = name[0];
+    return '$firstLetter'.toUpperCase();
   } else {
     return '?';
   }

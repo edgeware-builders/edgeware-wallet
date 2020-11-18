@@ -34,29 +34,33 @@ class TransferScreen extends GetView<TransferController> {
             hintText: 'Search or type new address',
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 15,
-              shrinkWrap: true,
-              primary: true,
-              itemBuilder: (context, index) {
-                return ContactTile(
-                  name: 'Shady Khalifa $index',
-                  address: '5FPATeYHZTiYsFq3iZ8gtxzTKoDaYfHhFZAynah3wfzkyFEH',
-                  trailingText: 'SEND',
-                  onPressed: () {
-                    // TODO(shekohex): do the transaction here
-                    Get.offAll(
-                      _TransactionSuccess(
-                        name: 'Shady Khalifa',
-                        address:
-                            '5FPATeYHZTiYsFq3iZ8gtxzTKoDaYfHhFZAynah3wfzkyFEH',
-                        amount: BigInt.parse('1000'),
-                        currentBalance: BigInt.parse('100000'),
-                      ),
-                    );
-                  },
-                );
-              },
+            child: Obx(
+              () => ListView.builder(
+                itemCount: controller.contacts.length,
+                shrinkWrap: true,
+                primary: true,
+                itemBuilder: (context, index) {
+                  final contact = controller.contacts[index];
+                  return ContactTile(
+                    name: contact.fullName,
+                    address: contact.address,
+                    trailingText: 'SEND',
+                    trailingOnPressed: () {
+                      // TODO(shekohex): do the transaction here
+                      Get.offAll(
+                        _TransactionSuccess(
+                          name: contact.fullName,
+                          address: contact.address,
+                          amount: controller.op.amount,
+                          currentBalance: BigInt.parse(
+                            controller.currentBalance.value,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],

@@ -19,7 +19,7 @@ mixin EdgewareAccountInfoMixin on GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-    await edgeware.initRpcClient(url: testNetRpcEndpoint);
+    await edgeware.initRpcClient(url: mainNetRpcEndpoint);
     final info = await queryInfo();
     print('my info $info');
     currentBalance.value = info.free.toString();

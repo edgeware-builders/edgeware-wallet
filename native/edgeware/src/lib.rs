@@ -1,6 +1,6 @@
 use std::{ffi, os::raw};
 use substrate_subxt::sp_core::{
-    crypto::{Ss58AddressFormat, Ss58Codec},
+    crypto::{AccountId32, Ss58AddressFormat, Ss58Codec},
     Pair,
 };
 
@@ -115,6 +115,22 @@ pub unsafe extern "C" fn edg_keypair_public(
         .to_ss58check_with_version(Ss58AddressFormat::EdgewareAccount);
     let pk = unwrap_or_null!(ffi::CString::new(pk));
     pk.into_raw()
+}
+
+/// Check for a string is in ss58 format.
+///
+/// ### Safety
+/// this assumes that `address` is not null and it is a valid utf8 string`.
+// otherwise, this function will return 0 (false).
+#[no_mangle]
+pub unsafe extern "C" fn edg_check_ss58_format(
+    address: *const raw::c_char,
+) -> i32 {
+    let address = cstr!(address, err = 0);
+    match AccountId32::from_ss58check_with_version(address) {
+        Ok((_, format)) => (format == Ss58AddressFormat::EdgewareAccount) as _,
+        Err(_) => 0,
+    }
 }
 
 /// Get `KeyPair`'s Entropy and return 1 (true).

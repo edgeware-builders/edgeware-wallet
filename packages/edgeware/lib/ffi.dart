@@ -27,6 +27,22 @@ class RawEdgeware {
 
   _dart_edg_account_info_free _edg_account_info_free;
 
+  /// Check for a string is in ss58 format.
+  ///
+  /// ### Safety
+  /// this assumes that `address` is not null and it is a valid utf8 string`.
+  int edg_check_ss58_format(
+    ffi.Pointer<ffi.Int8> address,
+  ) {
+    _edg_check_ss58_format ??= _dylib.lookupFunction<_c_edg_check_ss58_format,
+        _dart_edg_check_ss58_format>('edg_check_ss58_format');
+    return _edg_check_ss58_format(
+      address,
+    );
+  }
+
+  _dart_edg_check_ss58_format _edg_check_ss58_format;
+
   /// Backup KeyPair and get a Mnemonic phrase.
   ///
   /// ### Note
@@ -329,6 +345,14 @@ typedef _c_edg_account_info_free = ffi.Void Function(
 
 typedef _dart_edg_account_info_free = void Function(
   ffi.Pointer<AccountInfo> ptr,
+);
+
+typedef _c_edg_check_ss58_format = ffi.Int32 Function(
+  ffi.Pointer<ffi.Int8> address,
+);
+
+typedef _dart_edg_check_ss58_format = int Function(
+  ffi.Pointer<ffi.Int8> address,
 );
 
 typedef _c_edg_keypair_backup = ffi.Pointer<ffi.Int8> Function(

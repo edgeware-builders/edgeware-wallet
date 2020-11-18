@@ -38,6 +38,9 @@ extension Uint8ListArray on Pointer<ffi.FfiArray> {
 
 extension StringPointer on String {
   Pointer<ffi.Utf8> toPointer() {
+    if (this == null) {
+      return nullptr;
+    }
     return ffi.Utf8.toUtf8(this);
   }
 }

@@ -62,6 +62,14 @@ typedef const void *RawRpcClient;
 void edg_account_info_free(AccountInfo *ptr);
 
 /**
+ * Check for a string is in ss58 format.
+ *
+ * ### Safety
+ * this assumes that `address` is not null and it is a valid utf8 string`.
+ */
+int32_t edg_check_ss58_format(const char *address);
+
+/**
  * Backup KeyPair and get a Mnemonic phrase.
  *
  * ### Note
