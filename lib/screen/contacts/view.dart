@@ -32,11 +32,22 @@ class ContactsScreen extends GetView<ContactsController> {
                 } else {
                   final contact = contacts[index - 1];
                   return ContactTile(
-                    name: contact.fullName,
+                    name: contact.fullname,
                     address: contact.address,
                     onTap: () {
                       Get.bottomSheet(
                         ContactInformationSheet(contact: contact),
+                        enableDrag: true,
+                        isDismissible: true,
+                        useRootNavigator: false,
+                      );
+                    },
+                    onLongPress: () {
+                      Get.bottomSheet(
+                        ShareAccount(
+                          fullname: contact.fullname,
+                          address: contact.address,
+                        ),
                         enableDrag: true,
                         isDismissible: true,
                         useRootNavigator: false,
@@ -168,7 +179,7 @@ class ContactInformationSheet extends GetView<ContactsController> {
           const SizedBox(height: 8),
           ListTile(
             title: const Text('Name'),
-            trailing: Text(contact.fullName),
+            trailing: Text(contact.fullname),
           ),
           ListTile(
             title: const Text('Address'),
@@ -247,7 +258,7 @@ class _AddNewContactSheet extends StatelessWidget {
             text: 'Save',
             onPressed: () {
               Get.back(
-                result: Contact(fullName: fullname, address: address),
+                result: Contact(fullname: fullname, address: address),
                 closeOverlays: false,
               );
             },

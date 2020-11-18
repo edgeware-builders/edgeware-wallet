@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wallet/wallet.dart';
 
 class MeScreen extends GetView<MeController> {
@@ -12,7 +13,17 @@ class MeScreen extends GetView<MeController> {
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
-            onPressed: () {},
+            onPressed: () {
+              Get.bottomSheet(
+                ShareAccount(
+                  fullname: controller.fullname.value,
+                  address: controller.address,
+                ),
+                enableDrag: true,
+                isDismissible: true,
+                useRootNavigator: false,
+              );
+            },
           ),
         ],
       ),
@@ -72,6 +83,51 @@ class MeScreen extends GetView<MeController> {
               Get.toNamed(Routes.legal);
             },
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class ShareAccount extends StatelessWidget {
+  const ShareAccount({
+    @required this.fullname,
+    @required this.address,
+    Key key,
+  }) : super(key: key);
+  final String fullname, address;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          SizedBox(height: 22.h),
+          Center(
+              child: Text(
+            fullname,
+            style: TextStyle(fontSize: 22.ssp),
+          )),
+          SizedBox(height: 8.h),
+          Center(
+            child: QrImage(
+              data: encodeAccountQr(
+                AccountQr(fullname, address),
+              ),
+              version: QrVersions.auto,
+              size: 300.w,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Center(
+              child: Text(
+            addressFormat(address),
+            style: TextStyle(
+              fontSize: 16.ssp,
+              color: AppColors.disabled,
+            ),
+          )),
         ],
       ),
     );

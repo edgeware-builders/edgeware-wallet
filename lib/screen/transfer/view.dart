@@ -42,14 +42,14 @@ class TransferScreen extends GetView<TransferController> {
                 itemBuilder: (context, index) {
                   final contact = controller.contacts[index];
                   return ContactTile(
-                    name: contact.fullName,
+                    name: contact.fullname,
                     address: contact.address,
                     trailingText: 'SEND',
                     trailingOnPressed: () {
                       // TODO(shekohex): do the transaction here
                       Get.offAll(
                         _TransactionSuccess(
-                          name: contact.fullName,
+                          name: contact.fullname,
                           address: contact.address,
                           amount: controller.op.amount,
                           currentBalance: BigInt.parse(

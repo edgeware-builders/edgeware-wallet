@@ -4,7 +4,7 @@ import 'package:wallet/wallet.dart';
 
 class Contact {
   Contact({
-    @required this.fullName,
+    @required this.fullname,
     @required this.address,
     this.contactId,
     this.createdAt,
@@ -15,7 +15,7 @@ class Contact {
     return Contact(
       contactId: map['id'],
       address: map['address'],
-      fullName: map['full_name'],
+      fullname: map['full_name'],
       createdAt: DateTime.parse(map['created_at']).toUtc(),
       updatedAt: map['updated_at'] != null
           ? DateTime.parse(map['updated_at']).toUtc()
@@ -26,13 +26,13 @@ class Contact {
   Map<String, dynamic> toMap() {
     return {
       'address': address,
-      'full_name': fullName,
+      'full_name': fullname,
       'created_at': createdAt?.toUtc()?.toIso8601String(),
       'updated_at': updatedAt?.toUtc()?.toIso8601String(),
     };
   }
 
-  final String fullName, address;
+  final String fullname, address;
   DateTime createdAt, updatedAt;
   int contactId;
   RxString currentBalance = '0'.obs;

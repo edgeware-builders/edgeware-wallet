@@ -29,7 +29,7 @@ mixin ContactsMixin on GetxController {
       return;
     }
     // validate contact
-    if (contact.fullName.isNullOrBlank) {
+    if (contact.fullname.isNullOrBlank) {
       showErrorSnackBar(
         message: 'Contact should get a name',
         title: 'Save Failed',
