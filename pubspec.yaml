@@ -24,7 +24,6 @@ dependencies:
   path_provider: ^1.6.18
   connectivity: ">=0.4.9+3 <2.0.0"
   url_launcher: ^5.7.10
-  camerawesome: ^0.1.1+1
   logger: ^0.9.4
   edgeware:
     path: ./packages/edgeware
