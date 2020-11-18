@@ -16,6 +16,15 @@ This project uses [cargo make](https://github.com/sagiegurari/cargo-make) to com
 
 [`shekohex/flutterust`](https://github.com/shekohex/flutterust) is a generic template for Rust to Dart FFI
 
+## Features
+
+-   [x] Generate a new Edgeware Account.
+-   [x] Backup/Restore your account using `Paper Key` (Seed Phrase).
+-   [ ] Transfer `EDG` to other accounts.
+-   [x] Keep track of your contacts (view balances, share contacts).
+-   [x] Share your account using QR Code and add contacts by scanning the QR Code.
+-   [ ] Biometric Authorization when sending tokens instead of using passwords (Face ID, Touch ID, Fingerprint, ..etc).
+
 ## Build Instructions
 
 1. **[Install Flutter](https://flutter.dev/docs/get-started/install)**.
