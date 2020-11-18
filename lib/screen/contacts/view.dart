@@ -113,7 +113,9 @@ class _SearchBar extends GetView<ContactsController> {
               fit: BoxFit.scaleDown,
             ),
             splashRadius: 25,
-            onPressed: () {},
+            onPressed: () {
+              controller.scanContactQr();
+            },
           ),
         ),
       ],

@@ -72,7 +72,9 @@ class TransferScreen extends GetView<TransferController> {
           fit: BoxFit.scaleDown,
           width: 28.w,
         ),
-        onPressed: () {},
+        onPressed: () {
+          controller.scanContactQr();
+        },
       ),
     );
   }

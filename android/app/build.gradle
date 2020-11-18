@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         applicationId "re.edgewa.wallet"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

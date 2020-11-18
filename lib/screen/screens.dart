@@ -10,6 +10,8 @@ export 'me/controller.dart';
 export 'me/view.dart';
 export 'my_information/controller.dart';
 export 'my_information/view.dart';
+export 'qrscan/controller.dart';
+export 'qrscan/view.dart';
 export 'recover_account/controller.dart';
 export 'recover_account/view.dart';
 export 'settings/controller.dart';

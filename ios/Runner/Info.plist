@@ -45,6 +45,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>To Scan QR Codes</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 
 </dict>
 </plist>

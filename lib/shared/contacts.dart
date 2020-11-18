@@ -24,9 +24,9 @@ mixin ContactsMixin on GetxController {
     await contactsStream.forEach(contacts.add);
   }
 
-  Future<void> saveContact(Contact contact) async {
+  Future<bool> saveContact(Contact contact) async {
     if (contact == null) {
-      return;
+      return false;
     }
     // validate contact
     if (contact.fullname.isNullOrBlank) {
@@ -34,14 +34,14 @@ mixin ContactsMixin on GetxController {
         message: 'Contact should get a name',
         title: 'Save Failed',
       );
-      return;
+      return false;
     }
     if (contact.address.isNullOrBlank) {
       showErrorSnackBar(
         message: 'Contact should get a unique address',
         title: 'Save Failed',
       );
-      return;
+      return false;
     }
     final isValidAddress = edgware.isValidEdgewareAddress(contact.address);
     if (isValidAddress) {
@@ -52,7 +52,18 @@ mixin ContactsMixin on GetxController {
         message: 'Invalid Edgeware Contact Address!',
         title: 'Save Failed',
       );
-      return;
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> scanContactQr() async {
+    final result = await Get.to<AccountQr>(const QrScanScreen());
+    final contact = Contact(fullname: result.fullname, address: result.address);
+    final saved = await saveContact(contact);
+    if (saved) {
+      showInfoSnackBar(message: 'Contact ${contact.fullname} Saved!');
     }
   }
 }
