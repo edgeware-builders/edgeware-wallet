@@ -1,4 +1,5 @@
 import 'package:edgeware/edgeware.dart';
+import 'package:flutter/material.dart';
 import 'package:wallet/wallet.dart';
 
 class SplashController extends GetxController {
@@ -9,9 +10,28 @@ class SplashController extends GetxController {
     super.onReady();
     final hasEntropy = await _secureStorage.hasEntropy();
     try {
-      await _edgeware
-          .initRpcClient(url: testNetRpcEndpoint)
-          .timeout(10.seconds);
+      final isConnected = await isConnectedToNetwork();
+      if (isConnected) {
+        await _edgeware
+            .initRpcClient(url: testNetRpcEndpoint)
+            .timeout(10.seconds);
+      } else {
+        await Get.dialog(
+          MyAlertDialog(
+            title: 'No Internet Connection',
+            content: 'It seems that you are not connected to the internet'
+                'the application will face some issues',
+            actions: [
+              FlatButton(
+                child: const Text('I KNOW'),
+                onPressed: () {
+                  Get.back();
+                },
+              )
+            ],
+          ),
+        );
+      }
     } catch (e) {
       showErrorSnackBar(message: e.message ?? e.toString());
     }
