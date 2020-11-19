@@ -13,6 +13,7 @@ class ContactsController extends GetxController with ContactsMixin {
     }
     await contact.delete(db);
     contacts.removeWhere((e) => e.contactId == contact.contactId);
+    loadedContacts.removeWhere((e) => e.contactId == contact.contactId);
     return true;
   }
 }

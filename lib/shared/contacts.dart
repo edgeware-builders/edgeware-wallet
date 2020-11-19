@@ -6,6 +6,7 @@ mixin ContactsMixin on GetxController {
   final edgware = Get.find<Edgeware>();
 
   final contacts = List<Contact>.empty(growable: true).obs;
+  final loadedContacts = List<Contact>.empty(growable: true);
 
   @override
   Future<void> onReady() async {
@@ -21,7 +22,8 @@ mixin ContactsMixin on GetxController {
 
   Future<void> loadContacts() async {
     final contactsStream = Contact.fetch(db, limit: 100);
-    await contactsStream.forEach(contacts.add);
+    await contactsStream.forEach(loadedContacts.add);
+    contacts.addAll(loadedContacts);
   }
 
   Future<bool> saveContact(Contact contact) async {
@@ -47,6 +49,7 @@ mixin ContactsMixin on GetxController {
     if (isValidAddress) {
       await contact.save(db);
       contacts.add(contact);
+      loadedContacts.add(contact);
     } else {
       showErrorSnackBar(
         message: 'Invalid Edgeware Contact Address!',
@@ -60,10 +63,30 @@ mixin ContactsMixin on GetxController {
 
   Future<void> scanContactQr() async {
     final result = await Get.to<AccountQr>(const QrScanScreen());
+    if (result == null) {
+      return;
+    }
     final contact = Contact(fullname: result.fullname, address: result.address);
     final saved = await saveContact(contact);
     if (saved) {
       showInfoSnackBar(message: 'Contact ${contact.fullname} Saved!');
     }
+  }
+
+  Future<void> filter(String keyword) async {
+    final niddle = keyword.toLowerCase().trim();
+    if (niddle.isEmpty) {
+      contacts
+        ..clear()
+        ..addAll(loadedContacts);
+    }
+    final filtered = loadedContacts.where(
+      (c) =>
+          c.fullname.toLowerCase().contains(niddle) ||
+          c.address.contains(niddle),
+    );
+    contacts
+      ..clear()
+      ..addAll(filtered);
   }
 }

@@ -110,6 +110,7 @@ class Edgeware {
 
   Future<AccountInfo> queryAccountInfo({@required String ss58}) async {
     final completer = Completer<dynamic>();
+    assert(_rpc != nullptr);
     final port = singleCompletePort(completer);
     final result = _lib.edg_rpc_client_query_account_info(
       port.nativePort,
@@ -135,6 +136,8 @@ class Edgeware {
     @required BigInt amount,
   }) async {
     final completer = Completer<dynamic>();
+    assert(_rpc != nullptr);
+    assert(_keypair != nullptr);
     final port = singleCompletePort(completer);
     final result = _lib.edg_rpc_client_balance_transfer(
       port.nativePort,
@@ -146,7 +149,7 @@ class Edgeware {
     assert(result == 1);
     final res = await completer.future;
     print(res);
-    if (res is int) {
+    if (res is bool && res == true) {
       return;
     } else if (res is String) {
       throw StateError(res);

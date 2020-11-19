@@ -112,7 +112,7 @@ pub unsafe extern "C" fn edg_keypair_public(
     let pk = keypair
         .pair()
         .public()
-        .to_ss58check_with_version(Ss58AddressFormat::EdgewareAccount);
+        .to_ss58check_with_version(Ss58AddressFormat::SubstrateAccount);
     let pk = unwrap_or_null!(ffi::CString::new(pk));
     pk.into_raw()
 }
@@ -128,7 +128,7 @@ pub unsafe extern "C" fn edg_check_ss58_format(
 ) -> i32 {
     let address = cstr!(address, err = 0);
     match AccountId32::from_ss58check_with_version(address) {
-        Ok((_, format)) => (format == Ss58AddressFormat::EdgewareAccount) as _,
+        Ok((_, format)) => (format == Ss58AddressFormat::SubstrateAccount) as _,
         Err(_) => 0,
     }
 }

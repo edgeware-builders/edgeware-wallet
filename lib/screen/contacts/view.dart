@@ -21,88 +21,83 @@ class ContactsScreen extends GetView<ContactsController> {
         body: Obx(
           () {
             final contacts = controller.contacts;
-            if (contacts.isEmpty) {
-              return Column(
-                children: const [
-                  _SearchBar(),
-                  Expanded(child: SizedBox()),
-                  EmptyContactsSubView(),
-                  Expanded(child: SizedBox()),
-                ],
-              );
-            }
-            return ListView.builder(
-              itemCount: contacts.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return const _SearchBar();
-                } else {
-                  final contact = contacts[index - 1];
-                  return Dismissible(
-                    key: Key(contact.address),
-                    background: Container(color: AppColors.danger),
-                    direction: DismissDirection.endToStart,
-                    confirmDismiss: (_) async {
-                      return Get.dialog(
-                        MyAlertDialog(
-                          title: 'Alert',
-                          content: 'Are you sure you want'
-                              ' to delete this contact?',
-                          actions: [
-                            FlatButton(
-                              child: const Text('DELETE'),
-                              textColor: AppColors.danger,
-                              onPressed: () {
-                                Get.back(result: true);
-                              },
-                            ),
-                            FlatButton(
-                              child: const Text('CANCEL'),
-                              onPressed: () {
-                                Get.back(result: false);
-                              },
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    onDismissed: (_) {
-                      controller.deleteContact(contact);
-                    },
-                    child: ContactTile(
-                      name: contact.fullname,
-                      address: contact.address,
-                      onTap: () {
-                        Get.bottomSheet(
-                          ContactInformationSheet(contact: contact),
-                          enableDrag: true,
-                          isDismissible: true,
-                          useRootNavigator: false,
-                        );
-                      },
-                      onLongPress: () {
-                        Get.bottomSheet(
-                          ShareAccount(
-                            fullname: contact.fullname,
+            return Column(
+              children: [
+                const _SearchBar(),
+                Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: contacts.length,
+                      itemBuilder: (context, index) {
+                        final contact = contacts[index];
+                        return Dismissible(
+                          key: Key(contact.address),
+                          background: Container(color: AppColors.danger),
+                          direction: DismissDirection.endToStart,
+                          confirmDismiss: (_) async {
+                            return Get.dialog(
+                              MyAlertDialog(
+                                title: 'Alert',
+                                content: 'Are you sure you want'
+                                    ' to delete this contact?',
+                                actions: [
+                                  FlatButton(
+                                    child: const Text('DELETE'),
+                                    textColor: AppColors.danger,
+                                    onPressed: () {
+                                      Get.back(result: true);
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: const Text('CANCEL'),
+                                    onPressed: () {
+                                      Get.back(result: false);
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                          onDismissed: (_) {
+                            controller.deleteContact(contact);
+                          },
+                          child: ContactTile(
+                            name: contact.fullname,
                             address: contact.address,
+                            onTap: () {
+                              Get.bottomSheet(
+                                ContactInformationSheet(contact: contact),
+                                enableDrag: true,
+                                isDismissible: true,
+                                useRootNavigator: false,
+                              );
+                            },
+                            onLongPress: () {
+                              Get.bottomSheet(
+                                ShareAccount(
+                                  fullname: contact.fullname,
+                                  address: contact.address,
+                                ),
+                                enableDrag: true,
+                                isDismissible: true,
+                                useRootNavigator: false,
+                              );
+                            },
+                            trailingOnPressed: () {
+                              Get.bottomSheet(
+                                ContactInformationSheet(contact: contact),
+                                enableDrag: true,
+                                isDismissible: true,
+                                useRootNavigator: false,
+                              );
+                            },
                           ),
-                          enableDrag: true,
-                          isDismissible: true,
-                          useRootNavigator: false,
                         );
-                      },
-                      trailingOnPressed: () {
-                        Get.bottomSheet(
-                          ContactInformationSheet(contact: contact),
-                          enableDrag: true,
-                          isDismissible: true,
-                          useRootNavigator: false,
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
+                      }),
+                ),
+                if (contacts.isEmpty) const EmptyContactsSubView(),
+                const Expanded(child: SizedBox()),
+              ],
             );
           },
         ),
@@ -142,6 +137,10 @@ class _SearchBar extends GetView<ContactsController> {
               fit: BoxFit.scaleDown,
             ),
             hintText: 'Search',
+            onChanged: (keyword) {
+              print(keyword);
+              controller.filter(keyword);
+            },
           ),
         ),
         Padding(

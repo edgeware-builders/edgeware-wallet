@@ -31,7 +31,10 @@ class TransferScreen extends GetView<TransferController> {
               'assets/svg/search.svg',
               fit: BoxFit.scaleDown,
             ),
-            hintText: 'Search or type new address',
+            hintText: 'Search ...',
+            onChanged: (keyword) {
+              controller.filter(keyword);
+            },
           ),
           Expanded(
             child: Obx(
@@ -45,18 +48,21 @@ class TransferScreen extends GetView<TransferController> {
                     name: contact.fullname,
                     address: contact.address,
                     trailingText: 'SEND',
-                    trailingOnPressed: () {
-                      // TODO(shekohex): do the transaction here
-                      Get.offAll(
-                        _TransactionSuccess(
-                          name: contact.fullname,
-                          address: contact.address,
-                          amount: controller.op.amount,
-                          currentBalance: BigInt.parse(
-                            controller.currentBalance.value,
+                    trailingOnPressed: () async {
+                      final ok = await controller.transfer(contact);
+                      if (ok) {
+                        // ignore: unawaited_futures
+                        Get.offAll(
+                          _TransactionSuccess(
+                            name: contact.fullname,
+                            address: contact.address,
+                            amount: controller.op.amount,
+                            currentBalance: BigInt.parse(
+                              controller.currentBalance.value,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     },
                   );
                 },
@@ -156,13 +162,6 @@ class _TransactionSuccess extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _TransactionFailed extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }
 
