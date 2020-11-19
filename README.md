@@ -1,4 +1,4 @@
-# Edgeware Wallet (Demo)
+# Edgeware Wallet
 
 <!-- TODO(shekohex): add CI Tags here once done with CI/CD -->
 
@@ -20,10 +20,12 @@ This project uses [cargo make](https://github.com/sagiegurari/cargo-make) to com
 
 -   [x] Generate a new Edgeware Account.
 -   [x] Backup/Restore your account using `Paper Key` (Seed Phrase).
--   [ ] Transfer `EDG` to your contacts.
+-   [x] Transfer `EDG` to your contacts (Tested on Edgeware testnet).
 -   [x] Keep track of your contacts (view balances, share contacts).
 -   [x] Share your account using QR Code and add contacts by scanning the QR Code.
 -   [x] Biometric Authorization when sending tokens instead of using passwords (Face ID, Touch ID, Fingerprint, ..etc).
+
+> Need to see a new feature? Open a new issue with `Feature Request` label :)
 
 ## Build Instructions
 
@@ -77,7 +79,19 @@ $ cargo make ios --profile release # Release Build is Required since debug build
 $ flutter run
 ```
 
-After you run the application, all changed state is saved in the directory. To restart from the `Generate Your Account` screen, you must reset the cloned repo to head (`git reset --hard HEAD`), delete the app from the simulator and do the last three commands listed above again.
+## FAQ
+
+1. How do I create an account?
+
+When you open the application for the first time, the application will try to find if you already got an account on your device.
+if there is no account, it will ask you if you want to "Generate account" or "Recover my account".
+Click on "Generate account" and follow the steps (it is only one step, really that easy!).
+
+2. How do I get free EDG for testing?
+
+assuming the app built against the `testnet` (beresheet1.edgewa.re) you can use this [tool](https://beresheet-faucet.vercel.app/) to `mint` your account with a free balance.
+Go to your account (Click on the little icon on the top left corner) and go to `My Information` and you will see your address there (Long press to copy it).
+after adding tokens (EDG) to your account, close the information screen and open it again, or simply close the app and open it again.
 
 ## Safety
 
