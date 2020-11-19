@@ -29,6 +29,13 @@ This project uses [cargo make](https://github.com/sagiegurari/cargo-make) to com
 
 > Need to see a new feature? Open a new issue with `Feature Request` label :)
 
+## Download
+
+You can get the APK (For Android) from [releases](https://github.com/shekohex/edgeware-wallet/releases) you will find two variants one for (ARM64, real devices) and the other one for (x86_64, emulators).
+If you don't have a recent Android device (Android 7+) you could download the (x86_64) APK and "Drag & Drop" it on an Emulator.
+
+For iOS, well .. you can't just install anything (IPA) on Real device, you will have to compile and test the code on the iOS Simulator.
+
 ## Build Instructions
 
 1. **[Install Flutter](https://flutter.dev/docs/get-started/install)**.
