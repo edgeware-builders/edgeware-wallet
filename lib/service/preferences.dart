@@ -20,4 +20,8 @@ class Preferences extends GetxService {
         'address',
         getBox: () => _preferences,
       );
+  ReadWriteValue<bool> get useBiometricAuth => true.val(
+        'use_biometric_auth',
+        getBox: () => _preferences,
+      );
 }

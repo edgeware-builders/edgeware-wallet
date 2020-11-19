@@ -18,7 +18,7 @@ class MyInformationController extends GetxController
 
   void updateFullname() {
     pref.fullname.val = fullnameController.text.trim();
-    fullname.value = pref.fullname.val;
+    fullname.value = fullnameController.text.trim();
     Get.back();
   }
 }

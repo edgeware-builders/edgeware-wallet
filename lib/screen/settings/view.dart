@@ -11,14 +11,29 @@ class SettingsScreen extends GetView<SettingsController> {
       ),
       body: ListView(
         children: [
+          Obx(
+            () => CheckboxListTile(
+              title: const Text('Fingerprint Auth'),
+              subtitle: const Text(
+                'Use fingerprint to authenticate my account'
+                ' instead of password',
+              ),
+              value: controller.useBiometricAuth.value,
+              onChanged: (value) {
+                controller.changeBiometricAuth(value: value);
+              },
+            ),
+          ),
           ListTile(
             title: const Text('Paper Key'),
             subtitle: const Text(
               'Show a paper key used to recover your account',
             ),
-            onTap: () {
-              // TODO(shekohex): ask for password here.
-              Get.to(_PaperKeyScreen());
+            onTap: () async {
+              final loaded = await controller.loadPaperKey();
+              if (loaded) {
+                await Get.to(_PaperKeyScreen());
+              }
             },
           ),
           ListTile(

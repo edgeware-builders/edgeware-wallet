@@ -1,3 +1,4 @@
+export 'auth/view.dart';
 export 'contacts/controller.dart';
 export 'contacts/view.dart';
 export 'generate_account/controller.dart';

@@ -83,6 +83,14 @@ class Contact {
     return result;
   }
 
+  Future<void> delete(Database db) async {
+    await db.instance.delete(
+      TableNames.contacts,
+      where: 'id = ?',
+      whereArgs: [contactId],
+    );
+  }
+
   @override
   String toString() {
     return toMap().toString();

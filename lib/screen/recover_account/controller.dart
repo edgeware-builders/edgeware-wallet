@@ -12,7 +12,7 @@ class RecoverAccountController extends GetxController
         return;
       }
       final password = password1Controller.text.trim();
-      final phrase = password1Controller.text.trim();
+      final phrase = paperKeyController.text.trim();
       final keypair = edgeware.restoreKeyPair(phrase, password);
       await secureStorage.writePassword(password);
       await secureStorage.writeEntropy(base64Encode(keypair.expose()));

@@ -18,7 +18,7 @@ class MyAlertDialog extends StatelessWidget {
       title: Text(
         title,
         style: const TextStyle(
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
       backgroundColor: AppColors.mainBackround,

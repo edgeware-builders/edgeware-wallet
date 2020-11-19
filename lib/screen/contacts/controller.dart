@@ -6,4 +6,13 @@ class ContactsController extends GetxController with ContactsMixin {
     print('$contact => $info');
     contact.currentBalance.value = info.free.toString();
   }
+
+  Future<bool> deleteContact(Contact contact) async {
+    if (contact == null) {
+      return false;
+    }
+    await contact.delete(db);
+    contacts.removeWhere((e) => e.contactId == contact.contactId);
+    return true;
+  }
 }

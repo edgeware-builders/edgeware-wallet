@@ -23,7 +23,7 @@ This project uses [cargo make](https://github.com/sagiegurari/cargo-make) to com
 -   [ ] Transfer `EDG` to your contacts.
 -   [x] Keep track of your contacts (view balances, share contacts).
 -   [x] Share your account using QR Code and add contacts by scanning the QR Code.
--   [ ] Biometric Authorization when sending tokens instead of using passwords (Face ID, Touch ID, Fingerprint, ..etc).
+-   [x] Biometric Authorization when sending tokens instead of using passwords (Face ID, Touch ID, Fingerprint, ..etc).
 
 ## Build Instructions
 
