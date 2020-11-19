@@ -31,7 +31,7 @@ jobs:
             target/i686-linux-android
             target/aarch64-apple-ios
             target/x86_64-apple-ios
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-ios
 
       - name: Install Cargo Tools (cargo-make)
         uses: actions-rs/cargo@v1

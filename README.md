@@ -1,7 +1,5 @@
 # Edgeware Wallet
 
-<!-- TODO(shekohex): add CI Tags here once done with CI/CD -->
-
 <div align="center">
   <img src="assets/promo.jpg" />
 </div>
