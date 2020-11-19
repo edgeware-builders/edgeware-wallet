@@ -67,7 +67,7 @@ jobs:
         id: cache-ndk
         uses: actions/cache@v2
         with:
-          path: /Users/runner/android/ndk-bundle
+          path: /Users/runner/Library/Android/sdk/ndk/18.1.5063045
           key: ${{ runner.os }}-cached-ndk
 
       - name: Install Android NDK
@@ -75,7 +75,7 @@ jobs:
         run: $ANDROID_SDK_ROOT/tools/bin/sdkmanager ndk-bundle
 
       - name: Set Android NDK Env
-        run: echo 'ANDROID_NDK_HOME=/Users/runner/android/ndk-bundle' >> $GITHUB_ENV
+        run: echo 'ANDROID_NDK_HOME=/Users/runner/Library/Android/sdk/ndk/18.1.5063045' >> $GITHUB_ENV
 
       - name: Install Android Targets
         run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
