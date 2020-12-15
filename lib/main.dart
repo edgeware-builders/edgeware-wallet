@@ -15,7 +15,7 @@ Future<void> main() async {
       statusBarColor: AppColors.mainBackround,
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.dark,
-      systemNavigationBarColor: AppColors.mainBackround,
+      systemNavigationBarColor: Colors.black,
       systemNavigationBarDividerColor: Colors.black,
       systemNavigationBarIconBrightness: Brightness.light,
     ),

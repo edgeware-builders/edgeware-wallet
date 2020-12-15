@@ -2,7 +2,7 @@ name: edgeware
 description: FFI Binding for Edgeware.
 version: 0.0.1
 author: Shady Khalifa <shekohex@gmail.com>
-homepage:
+homepage: 'https://github.com/shekohex/edgeware-wallet'
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
